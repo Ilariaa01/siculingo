@@ -2,10 +2,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import {
   onAuthStateChanged,
-  signInWithPopup,
   signOut as firebaseSignOut,
 } from 'firebase/auth'
-import { auth, googleProvider, ensureUserAccount, getAccountByUid } from '../firebase.js'
+import { auth, ensureUserAccount, getAccountByUid } from '../firebase.js'
 
 import { useGlobal } from '../composables/global.js'
 const global = useGlobal()
@@ -37,44 +36,15 @@ onUnmounted(() => {
   unsubscribeAuth()
 })
 
-async function connectWithGoogle() {
-  try {
-    const { user: firebaseUser } = await signInWithPopup(auth, googleProvider)
-    await ensureUserAccount(firebaseUser)
-  } catch (err) {
-    const code = err?.code
-    if (code === 'auth/popup-closed-by-user') {
-      console.info('[accounts] Google sign-in cancelled (popup closed)')
-      return
-    }
-    console.error('[accounts] connectWithGoogle failed', {
-      code,
-      message: err?.message,
-      err,
-    })
-  }
-}
-
 async function logout() {
   await firebaseSignOut(auth)
 }
 </script>
 
 <template>
-  <header
-    class="w-full"
-  >
+  <header class="w-full">
     <div class="mx-auto flex items-center justify-end gap-3">
-      <template v-if="!user">
-        <button
-          type="button"
-          class="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
-          @click="connectWithGoogle"
-        >
-          Connect with Google
-        </button>
-      </template>
-      <template v-else>
+      <template v-if="user">
         <div class="flex items-center gap-3">
           <img
             v-if="user.photoURL"

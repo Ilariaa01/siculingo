@@ -20,7 +20,7 @@ onMounted(() => {
   <Dialog />
   <div class="min-h-screen flex flex-col">
     <main
-      class="mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center py-4"
+      class="mx-auto flex w-full max-w-none flex-1 flex-col items-stretch"
     >
       <Auth />
       <router-view />

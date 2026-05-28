@@ -1,0 +1,242 @@
+[
+  {
+    "question": {
+      "value": "cantunera",
+      "text": "Cosa significa la parola cantunera?",
+      "answers": [
+        { "text": "Angolo di una strada", "correct": true },
+        { "text": "Stanza buia", "correct": false },
+        { "text": "Posto di polizia", "correct": false },
+        { "text": "Armadio molto grande", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "accattari",
+      "text": "Cosa significa il verbo accattari?",
+      "answers": [
+        { "text": "Comprare", "correct": true },
+        { "text": "Scappare", "correct": false },
+        { "text": "Cantare", "correct": false },
+        { "text": "Perdere", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "taliare",
+      "text": "Cosa significa il verbo taliare?",
+      "answers": [
+        { "text": "Guardare", "correct": true },
+        { "text": "Tagliare", "correct": false },
+        { "text": "Ascoltare", "correct": false },
+        { "text": "Dormire", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "picciotto",
+      "text": "Cosa significa la parola picciotto?",
+      "answers": [
+        { "text": "Ragazzo", "correct": true },
+        { "text": "Anziano", "correct": false },
+        { "text": "Insegnante", "correct": false },
+        { "text": "Medico", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "fimmina",
+      "text": "Cosa significa la parola fimmina?",
+      "answers": [
+        { "text": "Donna", "correct": true },
+        { "text": "Bambina", "correct": false },
+        { "text": "Moglie del re", "correct": false },
+        { "text": "Sorella maggiore", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "travagghiu",
+      "text": "Cosa significa la parola travagghiu?",
+      "answers": [
+        { "text": "Lavoro", "correct": true },
+        { "text": "Viaggio", "correct": false },
+        { "text": "Stanchezza", "correct": false },
+        { "text": "Festa", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "manciare",
+      "text": "Cosa significa il verbo manciare?",
+      "answers": [
+        { "text": "Mangiare", "correct": true },
+        { "text": "Masticare gomma", "correct": false },
+        { "text": "Bere", "correct": false },
+        { "text": "Cucinare", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "arricriari",
+      "text": "Cosa significa il verbo arricriari?",
+      "answers": [
+        { "text": "Divertirsi e rilassarsi", "correct": true },
+        { "text": "Rompere qualcosa", "correct": false },
+        { "text": "Studiare di notte", "correct": false },
+        { "text": "Correre veloce", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "ammucciare",
+      "text": "Cosa significa il verbo ammucciare?",
+      "answers": [
+        { "text": "Nascondere", "correct": true },
+        { "text": "Mostrare", "correct": false },
+        { "text": "Lavare", "correct": false },
+        { "text": "Scegliere", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "babbiu",
+      "text": "Cosa significa la parola babbiu?",
+      "answers": [
+        { "text": "Sciocco", "correct": true },
+        { "text": "Furbo", "correct": false },
+        { "text": "Coraggioso", "correct": false },
+        { "text": "Elegante", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "chi fa, nni jemu?",
+      "text": "Cosa significa l'espressione chi fa, nni jemu??",
+      "answers": [
+        { "text": "Allora, andiamo?", "correct": true },
+        { "text": "Cosa cuciniamo?", "correct": false },
+        { "text": "Quanto costa?", "correct": false },
+        { "text": "Dove sei stato?", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "unn'è cosa",
+      "text": "Cosa significa l'espressione unn'è cosa?",
+      "answers": [
+        { "text": "Non va bene / non si fa", "correct": true },
+        { "text": "E una cosa bella", "correct": false },
+        { "text": "Si compra al mercato", "correct": false },
+        { "text": "E una cosa costosa", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "c'arricampau",
+      "text": "Cosa significa l'espressione c'arricampau?",
+      "answers": [
+        { "text": "Se l'e cavata", "correct": true },
+        { "text": "Ha perso tutto", "correct": false },
+        { "text": "Ha preso freddo", "correct": false },
+        { "text": "Ha trovato casa", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "nuddu miscatu cu nenti",
+      "text": "Cosa significa l'espressione nuddu miscatu cu nenti?",
+      "answers": [
+        { "text": "Persona senza qualita o valore", "correct": true },
+        { "text": "Cuoco molto bravo", "correct": false },
+        { "text": "Artista famoso", "correct": false },
+        { "text": "Persona molto ricca", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "u suli spacca i petri",
+      "text": "Cosa significa l'espressione u suli spacca i petri?",
+      "answers": [
+        { "text": "Fa un caldo fortissimo", "correct": true },
+        { "text": "Sta piovendo forte", "correct": false },
+        { "text": "Il vento e gelido", "correct": false },
+        { "text": "C'e il temporale", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "naca",
+      "text": "Cosa significa la parola naca?",
+      "answers": [
+        { "text": "Culla", "correct": true },
+        { "text": "Barca grande", "correct": false },
+        { "text": "Sedia a dondolo", "correct": false },
+        { "text": "Scatola di legno", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "sciarriari",
+      "text": "Cosa significa il verbo sciarriari?",
+      "answers": [
+        { "text": "Litigare", "correct": true },
+        { "text": "Abbracciare", "correct": false },
+        { "text": "Telefonare", "correct": false },
+        { "text": "Festeggiare", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "vastasu",
+      "text": "Cosa significa la parola vastasu?",
+      "answers": [
+        { "text": "Maleducato", "correct": true },
+        { "text": "Molto stanco", "correct": false },
+        { "text": "Molto bello", "correct": false },
+        { "text": "Particolarmente alto", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "sdirrubbu",
+      "text": "Cosa significa la parola sdirrubbu?",
+      "answers": [
+        { "text": "Dirupo / burrone", "correct": true },
+        { "text": "Piazza centrale", "correct": false },
+        { "text": "Vicolo stretto", "correct": false },
+        { "text": "Ponte antico", "correct": false }
+      ]
+    }
+  },
+  {
+    "question": {
+      "value": "a picca a picca",
+      "text": "Cosa significa l'espressione a picca a picca?",
+      "answers": [
+        { "text": "Poco alla volta", "correct": true },
+        { "text": "Molto velocemente", "correct": false },
+        { "text": "Tutto insieme", "correct": false },
+        { "text": "Con rabbia", "correct": false }
+      ]
+    }
+  }
+]
