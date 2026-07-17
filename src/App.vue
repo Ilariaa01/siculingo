@@ -18,10 +18,8 @@ onMounted(() => {
 <template>
   <Loading v-if="global.loading > 0" />
   <Dialog />
-  <div class="min-h-screen flex flex-col">
-    <main
-      class="mx-auto flex w-full max-w-none flex-1 flex-col items-stretch"
-    >
+  <div class="flex h-dvh flex-col overflow-hidden">
+    <main class="mx-auto flex h-full w-full max-w-none flex-1 flex-col items-stretch overflow-hidden">
       <Auth />
       <router-view />
     </main>

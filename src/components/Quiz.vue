@@ -25,6 +25,18 @@ const isFinished = computed(() => {
   return questions.value.length > 0 && questionsIndex.value >= questions.value.length
 })
 
+const totalQuestions = computed(() => questions.value.length || 1)
+
+const currentStep = computed(() => {
+  if (questions.value.length === 0) return 0
+  return Math.min(questionsIndex.value + 1, questions.value.length)
+})
+
+const progressPercent = computed(() => {
+  if (questions.value.length === 0) return 0
+  return Math.min((questionsIndex.value / questions.value.length) * 100, 100)
+})
+
 const isQuizPassed = computed(() => {
   return questionsOk.value.length > questionsOkRequired
 })
@@ -90,36 +102,86 @@ function restartQuiz() {
   questionsKo.value = []
 }
 
+function goPreviousQuestion() {
+  if (questionsIndex.value === 0) return
+  questionsIndex.value -= 1
+}
+
+function goNextQuestion() {
+  if (isFinished.value) return
+  questionsIndex.value += 1
+}
+
 onMounted(() => {
   loadQuestions()
 })
 </script>
 
 <template>
-  <section class="mt-8 w-full">
-    <h1 class="mb-4 text-2xl font-bold text-neutral-900">Quiz dialetto siculo</h1>
+  <section class="w-full px-4 sm:px-0">
 
-    <p
-      v-if="fetchError"
-      class="rounded-md border border-red-300 bg-red-50 p-3 text-red-800"
-    >
+    <p v-if="fetchError" class="mx-auto max-w-4xl rounded-2xl border border-red-300 bg-red-50 p-4 text-red-800 shadow-sm">
       {{ fetchError }}
     </p>
 
-    <div v-else-if="questions.length === 0" class="text-neutral-600">
+    <div v-else-if="questions.length === 0" class="mx-auto max-w-4xl rounded-[34px] bg-white p-6 text-center text-neutral-600 shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
       Caricamento domande...
     </div>
 
-    <div v-else-if="!isFinished" class="space-y-3">
-      <p class="text-sm text-neutral-600">
-        Domanda {{ questionsIndex + 1 }} di {{ questions.length }}
-      </p>
+    <div v-else-if="!isFinished" class="w-full">
+      <div class="mx-auto mb-4 flex w-full max-w-[860px] items-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm sm:px-6">
+        <div class="h-3 flex-1 overflow-hidden rounded-full bg-[#D9DCE8]">
+          <div
+            class="h-full rounded-full bg-[#0B1334] transition-all duration-300"
+            :style="{ width: `${progressPercent}%` }"
+          ></div>
+        </div>
+        <span class="text-xs font-semibold text-[#0B1334] sm:text-sm">{{ currentStep }} su {{ totalQuestions }}</span>
+      </div>
 
-      <Answers
-        v-if="currentQuestion"
-        :question="currentQuestion"
-        @select="onAnswerSelected"
-      />
+      <div class="flex items-center justify-center gap-2 sm:gap-4">
+        <button
+          type="button"
+          class="hidden h-[92px] w-[92px] items-center justify-center rounded-full bg-white text-6xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40 sm:flex sm:h-[110px] sm:w-[110px]"
+          :disabled="questionsIndex === 0"
+          @click="goPreviousQuestion"
+        >
+          ←
+        </button>
+
+        <div class="w-full max-w-[860px] rounded-[34px] bg-white px-4 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:px-8 sm:py-7">
+          <div class="mb-4 flex items-start justify-between gap-3 sm:mb-5">
+            <div class="w-full text-center">
+              <h2 class="text-4xl font-bold italic leading-none text-[#AD2E2E] sm:text-5xl">
+                {{ currentQuestion?.value || `Domanda ${currentStep}` }}
+              </h2>
+              <p class="mt-4 text-xl font-semibold text-[#1E2435] sm:text-2xl">Cosa significa?</p>
+            </div>
+            <button
+              type="button"
+              class="rounded-full p-1 text-4xl leading-none text-[#1E2435] transition hover:bg-black/5"
+              @click="goNextQuestion"
+              aria-label="Salta domanda"
+            >
+              ×
+            </button>
+          </div>
+
+          <Answers
+            v-if="currentQuestion"
+            :question="currentQuestion"
+            @select="onAnswerSelected"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="hidden h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-6xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 sm:flex sm:h-[110px] sm:w-[110px]"
+          @click="goNextQuestion"
+        >
+          →
+        </button>
+      </div>
     </div>
 
     <ResultOk
