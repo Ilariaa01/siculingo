@@ -43,7 +43,7 @@ const mergedResults = computed(() => {
           v-if="result.result === 'ko'"
           class="mt-1 text-sm text-neutral-700"
         >
-          Risposta corretta: {{ result.answers.find((answer) => answer.correct)?.text }}
+          Risposta corretta: {{ result.correctAnswer?.text || result.answers.find((answer) => answer.correct)?.text }}
         </p>
       </li>
     </ul>

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import Answers from './Answers.vue'
 import ResultKo from './ResultKo.vue'
 import ResultOk from './ResultOk.vue'
@@ -11,8 +11,13 @@ const questions = ref([])
 const questionsOk = ref([])
 const questionsKo = ref([])
 const questionsIndex = ref(0)
-const questionsOkRequired = 3
+const questionsOkRequired = 15
 const fetchError = ref('')
+const answerFeedback = ref(null)
+const isAnswering = ref(false)
+
+const FEEDBACK_DURATION_MS = 900
+let feedbackTimerId = null
 
 const currentQuestion = computed(() => {
   if (questionsIndex.value >= questions.value.length) {
@@ -38,11 +43,30 @@ const progressPercent = computed(() => {
 })
 
 const isQuizPassed = computed(() => {
-  return questionsOk.value.length > questionsOkRequired
+  return questionsOk.value.length >= questionsOkRequired
 })
+
+function clearFeedbackTimer() {
+  if (feedbackTimerId !== null) {
+    clearTimeout(feedbackTimerId)
+    feedbackTimerId = null
+  }
+}
+
+function shuffleAnswers(answers) {
+  const shuffledAnswers = [...answers]
+
+  for (let index = shuffledAnswers.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    ;[shuffledAnswers[index], shuffledAnswers[randomIndex]] = [shuffledAnswers[randomIndex], shuffledAnswers[index]]
+  }
+
+  return shuffledAnswers
+}
 
 async function loadQuestions() {
   fetchError.value = ''
+  global.loading += 1
   try {
     const response = await fetch('/data.json')
     if (!response.ok) {
@@ -54,16 +78,29 @@ async function loadQuestions() {
       throw new Error('Il file data.json non contiene un array valido')
     }
 
-    questions.value = payload
+    questions.value = payload.map((item) => ({
+      ...item,
+      question: {
+        ...item.question,
+        answers: shuffleAnswers(item.question.answers),
+      },
+    }))
   } catch (error) {
     fetchError.value = error?.message || 'Errore sconosciuto'
+  } finally {
+    global.loading -= 1
   }
 }
 
 function cloneQuestionWithSelection(question, answerIndex) {
+  const selectedAnswer = question.answers[answerIndex] ?? null
+  const correctAnswer = question.answers.find((answer) => answer.correct) ?? null
+
   return {
     ...question,
     questionIndex: questionsIndex.value,
+    selectedAnswer: selectedAnswer ? { ...selectedAnswer, selected: true } : null,
+    correctAnswer: correctAnswer ? { ...correctAnswer } : null,
     answers: question.answers.map((answer, index) => ({
       ...answer,
       selected: index === answerIndex,
@@ -71,35 +108,46 @@ function cloneQuestionWithSelection(question, answerIndex) {
   }
 }
 
-function showDialogMessage(content) {
-  global.dialog = {
-    title: 'Quiz',
-    content,
-  }
-}
-
 function onAnswerSelected({ answer, answerIndex }) {
-  if (!currentQuestion.value) {
+  if (!currentQuestion.value || isAnswering.value) {
     return
   }
 
+  clearFeedbackTimer()
   const questionToStore = cloneQuestionWithSelection(currentQuestion.value, answerIndex)
+  const selectedAnswer = currentQuestion.value.answers?.[answerIndex]
 
-  if (answer.correct) {
-    questionsOk.value.push(questionToStore)
-    showDialogMessage('risposta esatta')
-  } else {
-    questionsKo.value.push(questionToStore)
-    showDialogMessage('risposta sbagliata')
+  if (!selectedAnswer) {
+    return
   }
 
-  questionsIndex.value += 1
+  if (selectedAnswer.correct) {
+    questionsOk.value.push(questionToStore)
+  } else {
+    questionsKo.value.push(questionToStore)
+  }
+
+  isAnswering.value = true
+  answerFeedback.value = {
+    index: answerIndex,
+    correct: selectedAnswer.correct,
+  }
+
+  feedbackTimerId = setTimeout(() => {
+    questionsIndex.value += 1
+    answerFeedback.value = null
+    isAnswering.value = false
+    feedbackTimerId = null
+  }, FEEDBACK_DURATION_MS)
 }
 
 function restartQuiz() {
+  clearFeedbackTimer()
   questionsIndex.value = 0
   questionsOk.value = []
   questionsKo.value = []
+  answerFeedback.value = null
+  isAnswering.value = false
 }
 
 function goPreviousQuestion() {
@@ -112,13 +160,48 @@ function goNextQuestion() {
   questionsIndex.value += 1
 }
 
+function answerRandomly() {
+  if (!questions.value.length) return
+
+  clearFeedbackTimer()
+  questionsOk.value = []
+  questionsKo.value = []
+  answerFeedback.value = null
+  isAnswering.value = false
+
+  for (const item of questions.value) {
+    const question = item.question
+    const randomIndex = Math.floor(Math.random() * question.answers.length)
+    const questionToStore = cloneQuestionWithSelection(question, randomIndex)
+
+    if (question.answers[randomIndex].correct) {
+      questionsOk.value.push(questionToStore)
+    } else {
+      questionsKo.value.push(questionToStore)
+    }
+  }
+
+  questionsIndex.value = questions.value.length
+}
+
+defineExpose({
+  questions,
+  questionsIndex,
+  isFinished,
+  answerRandomly,
+})
+
 onMounted(() => {
   loadQuestions()
+})
+
+onBeforeUnmount(() => {
+  clearFeedbackTimer()
 })
 </script>
 
 <template>
-  <section class="w-full px-4 sm:px-0">
+  <section class="flex h-full w-full flex-1 flex-col overflow-hidden px-4 sm:px-0">
 
     <p v-if="fetchError" class="mx-auto max-w-4xl rounded-2xl border border-red-300 bg-red-50 p-4 text-red-800 shadow-sm">
       {{ fetchError }}
@@ -139,44 +222,39 @@ onMounted(() => {
         <span class="text-xs font-semibold text-[#0B1334] sm:text-sm">{{ currentStep }} su {{ totalQuestions }}</span>
       </div>
 
-      <div class="flex items-center justify-center gap-2 sm:gap-4">
+      <div class="flex items-center justify-center gap-6 xl:gap-10">
         <button
           type="button"
-          class="hidden h-[92px] w-[92px] items-center justify-center rounded-full bg-white text-6xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40 sm:flex sm:h-[110px] sm:w-[110px]"
-          :disabled="questionsIndex === 0"
+          class="hidden h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white text-2xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40 sm:flex sm:h-16 sm:w-16 sm:text-3xl"
+          :disabled="questionsIndex === 0 || isAnswering"
           @click="goPreviousQuestion"
         >
           ←
         </button>
 
         <div class="w-full max-w-[860px] rounded-[34px] bg-white px-4 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:px-8 sm:py-7">
-          <div class="mb-4 flex items-start justify-between gap-3 sm:mb-5">
+          <div class="mb-4 sm:mb-5">
             <div class="w-full text-center">
               <h2 class="text-4xl font-bold italic leading-none text-[#AD2E2E] sm:text-5xl">
                 {{ currentQuestion?.value || `Domanda ${currentStep}` }}
               </h2>
-              <p class="mt-4 text-xl font-semibold text-[#1E2435] sm:text-2xl">Cosa significa?</p>
+              <p class="mt-4 text-xl font-semibold text-[#1E2435] sm:text-2xl">Cosa significa</p>
             </div>
-            <button
-              type="button"
-              class="rounded-full p-1 text-4xl leading-none text-[#1E2435] transition hover:bg-black/5"
-              @click="goNextQuestion"
-              aria-label="Salta domanda"
-            >
-              ×
-            </button>
           </div>
 
           <Answers
             v-if="currentQuestion"
             :question="currentQuestion"
+            :feedback="answerFeedback"
+            :disabled="isAnswering"
             @select="onAnswerSelected"
           />
         </div>
 
         <button
           type="button"
-          class="hidden h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-6xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 sm:flex sm:h-[110px] sm:w-[110px]"
+          class="hidden h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white text-2xl font-semibold leading-none text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 hover:brightness-95 sm:flex sm:h-16 sm:w-16 sm:text-3xl"
+          :disabled="isAnswering"
           @click="goNextQuestion"
         >
           →
@@ -184,20 +262,22 @@ onMounted(() => {
       </div>
     </div>
 
-    <ResultOk
-      v-else-if="isQuizPassed"
-      :questions-ok="questionsOk"
-      :questions-ko="questionsKo"
-      :questions-ok-required="questionsOkRequired"
-      @restart="restartQuiz"
-    />
+    <div v-else class="flex h-full min-h-0 w-full flex-1 overflow-hidden">
+      <ResultOk
+        v-if="isQuizPassed"
+        :questions-ok="questionsOk"
+        :questions-ko="questionsKo"
+        :questions-ok-required="questionsOkRequired"
+        @restart="restartQuiz"
+      />
 
-    <ResultKo
-      v-else
-      :questions-ok="questionsOk"
-      :questions-ko="questionsKo"
-      :questions-ok-required="questionsOkRequired"
-      @restart="restartQuiz"
-    />
+      <ResultKo
+        v-else
+        :questions-ok="questionsOk"
+        :questions-ko="questionsKo"
+        :questions-ok-required="questionsOkRequired"
+        @restart="restartQuiz"
+      />
+    </div>
   </section>
 </template>
