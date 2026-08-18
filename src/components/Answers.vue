@@ -4,10 +4,12 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+
   feedback: {
     type: Object,
     default: null,
   },
+
   disabled: {
     type: Boolean,
     default: false,
@@ -17,49 +19,121 @@ const props = defineProps({
 const emit = defineEmits(['select'])
 
 function onSelect(answer, answerIndex) {
-  emit('select', { answer, answerIndex })
+  if (props.disabled || props.feedback) {
+    return
+  }
+
+  emit('select', {
+    answer,
+    answerIndex,
+  })
 }
 
-function answerFeedbackClass(answerIndex, isCorrectAnswer) {
+function answerFeedbackClass(answerIndex, answer) {
+  // STATO INIZIALE
+  // Nessuna risposta è ancora stata selezionata.
   if (!props.feedback) {
-    return 'border-[#D8B857] bg-[#E0BE56] text-[#171E32]'
+    return [
+      'border-[#D8B857]',
+      'bg-[#E0BE56]',
+      'text-[#171E32]',
+      'hover:brightness-95',
+    ].join(' ')
   }
 
   const isSelected = props.feedback.index === answerIndex
+  const isCorrectAnswer = answer.correct
+  const wasCorrect = props.feedback.correct
 
-  if (isSelected && props.feedback.correct) {
-    return 'border-[#6BAE53] bg-[#79C35F] text-white shadow-[0_10px_24px_rgba(107,174,83,0.22)]'
+  // RISPOSTA CORRETTA
+  // L'utente ha scelto proprio la risposta corretta.
+  if (wasCorrect && isSelected) {
+    return [
+      'border-[#0B8742]',
+      'bg-[#0B8742]',
+      'text-white',
+      'shadow-[0_10px_24px_rgba(11,135,66,0.25)]',
+    ].join(' ')
   }
 
-  if (isSelected && !props.feedback.correct) {
-    return 'border-[#C85F5F] bg-[#E89B9B] text-[#4E1414] shadow-[0_10px_24px_rgba(200,95,95,0.18)]'
+  // RISPOSTA ERRATA SELEZIONATA
+  // L'utente ha scelto una risposta sbagliata.
+  if (!wasCorrect && isSelected) {
+    return [
+      'border-[#B93333]',
+      'bg-[#B93333]',
+      'text-white',
+      'shadow-[0_10px_24px_rgba(185,51,51,0.25)]',
+    ].join(' ')
   }
 
-  if (isCorrectAnswer) {
-    return 'border-[#A9D6A0] bg-[#E9F5E6] text-[#285020]'
+  // RISPOSTA CORRETTA DOPO UN ERRORE
+  // Evidenziamo chiaramente la risposta che l'utente avrebbe dovuto scegliere.
+  if (!wasCorrect && isCorrectAnswer) {
+    return [
+      'border-[#0B8742]',
+      'bg-[#0B8742]',
+      'text-white',
+      'shadow-[0_10px_24px_rgba(11,135,66,0.22)]',
+    ].join(' ')
   }
 
-  return 'border-[#D8B857] bg-[#E0BE56] text-[#171E32] opacity-70'
+  // ALTRE RISPOSTE DOPO IL FEEDBACK
+  return [
+    'border-[#D8B857]',
+    'bg-[#E0BE56]',
+    'text-[#171E32]',
+    'opacity-45',
+  ].join(' ')
 }
 </script>
 
 <template>
   <section class="w-full">
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+
       <button
         v-for="(answer, answerIndex) in props.question.answers"
         :key="`${props.question.value}-${answerIndex}`"
         type="button"
         :disabled="props.disabled"
-        class="min-h-[56px] rounded-full border px-3 py-2.5 text-center text-xs font-semibold leading-snug shadow-sm transition sm:min-h-[64px] sm:px-4 sm:py-3 sm:text-sm"
+        class="
+          flex
+          min-h-[84px]
+          items-center
+          justify-center
+          rounded-[22px]
+          border
+          px-3
+          py-3
+          text-center
+          text-[0.95rem]
+          font-semibold
+          leading-snug
+          shadow-sm
+          transition-all
+          duration-200
+          ease-out
+          sm:min-h-[100px]
+          sm:px-4
+          sm:text-base
+        "
         :class="[
-          answerFeedbackClass(answerIndex, answer.correct),
-          props.disabled ? 'cursor-not-allowed' : 'hover:brightness-95',
+          answerFeedbackClass(answerIndex, answer),
+
+          props.disabled
+            ? 'cursor-not-allowed'
+            : 'hover:scale-[1.01] hover:brightness-95',
+
+          props.feedback && !props.disabled
+            ? 'cursor-default'
+            : '',
         ]"
         @click="onSelect(answer, answerIndex)"
       >
         {{ answer.text }}
       </button>
+
     </div>
   </section>
 </template>
