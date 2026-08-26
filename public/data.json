@@ -1,14 +1,21 @@
 [
-  {
+{
     "question": {
-      "value": "Pastrano",
-      "text": "Cosa significa la parola Pastrano?",
+      "value": "Pastranu",
+      "text": "Cosa significa la parola Pastranu?",
       "answers": [
         { "text": "Cappotto", "correct": true },
         { "text": "Mantello", "correct": false },
         { "text": "Grembiule", "correct": false },
         { "text": "Cappello", "correct": false }
-      ]
+      ],
+      "explanation": {
+        "correctSubtitle": "Cappotto",
+        "usageExample": "Pigghia u pastranu ca fora fa friddu.",
+        "usageExplanation": "Prendi il cappotto che fuori fa freddo.",
+        "origin": "La parola deriva dal nome di Pastrana, una città della provincia di Guadalajara, in Spagna.",
+        "curiosity":"Il nome viene dal ricchissimo e raffinatissimo Duca di Pastrana, un nobile spagnolo del Cinquecento. È ironico che il suo titolo nobiliare sia finito per indicare, nel popolo, un cappotto vecchio, povero e sformato."
+      }
     }
   },
   {
@@ -20,7 +27,14 @@
         { "text": "Letto", "correct": false },
         { "text": "Tavolo", "correct": false },
         { "text": "Armadio", "correct": false }
-      ]
+      ],
+      "explanation": {
+        "correctSubtitle": "Comò",
+        "usageExample": "",
+        "usageExplanation": "",
+        "origin": "",
+        "curiosity": ""
+      }
     }
   },
   {
@@ -33,6 +47,7 @@
         { "text": "Panca", "correct": false },
         { "text": "Scaffale", "correct": false }
       ]
+      
     }
   },
   {

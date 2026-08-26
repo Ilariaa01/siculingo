@@ -31,7 +31,6 @@ function onSelect(answer, answerIndex) {
 
 function answerFeedbackClass(answerIndex, answer) {
   // STATO INIZIALE
-  // Nessuna risposta è ancora stata selezionata.
   if (!props.feedback) {
     return [
       'border-[#D8B857]',
@@ -46,7 +45,6 @@ function answerFeedbackClass(answerIndex, answer) {
   const wasCorrect = props.feedback.correct
 
   // RISPOSTA CORRETTA
-  // L'utente ha scelto proprio la risposta corretta.
   if (wasCorrect && isSelected) {
     return [
       'border-[#0B8742]',
@@ -57,7 +55,6 @@ function answerFeedbackClass(answerIndex, answer) {
   }
 
   // RISPOSTA ERRATA SELEZIONATA
-  // L'utente ha scelto una risposta sbagliata.
   if (!wasCorrect && isSelected) {
     return [
       'border-[#B93333]',
@@ -68,7 +65,6 @@ function answerFeedbackClass(answerIndex, answer) {
   }
 
   // RISPOSTA CORRETTA DOPO UN ERRORE
-  // Evidenziamo chiaramente la risposta che l'utente avrebbe dovuto scegliere.
   if (!wasCorrect && isCorrectAnswer) {
     return [
       'border-[#0B8742]',
@@ -107,8 +103,8 @@ function answerFeedbackClass(answerIndex, answer) {
           px-3
           py-3
           text-center
-          text-[0.95rem]
-          font-semibold
+          text-[18px]
+          font-bold
           leading-snug
           shadow-sm
           transition-all
@@ -116,7 +112,6 @@ function answerFeedbackClass(answerIndex, answer) {
           ease-out
           sm:min-h-[100px]
           sm:px-4
-          sm:text-base
         "
         :class="[
           answerFeedbackClass(answerIndex, answer),
