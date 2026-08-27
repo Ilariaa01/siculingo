@@ -112,8 +112,8 @@
   },
   {
     "question": {
-      "value": "Ammicciari",
-      "text": "Cosa significa il verbo Ammicciari?",
+      "value": "Ammucciari",
+      "text": "Cosa significa il verbo Ammucciari?",
       "answers": [
         { "text": "Nascondere", "correct": true },
         { "text": "Mostrare", "correct": false },
