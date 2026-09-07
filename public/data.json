@@ -448,8 +448,8 @@
   },
   {
     "question": {
-      "value": "Scivuru",
-      "text": "Cosa significa la parola Scivuru?",
+      "value": "Sciavuru",
+      "text": "Cosa significa la parola Sciavuru?",
       "answers": [
         { "text": "Profumo / odore buono", "correct": true },
         { "text": "Rumore forte", "correct": false },

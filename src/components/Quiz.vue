@@ -1,6 +1,7 @@
 <script setup>
 import {
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   ref,
@@ -32,6 +33,7 @@ const fetchError = ref('')
 const answerFeedback = ref(null)
 const isAnswering = ref(false)
 const isCardFlipped = ref(false)
+const isChangingQuestion = ref(false)
 const explanationDetails = ref(null)
 
 /*
@@ -631,7 +633,13 @@ function goPreviousQuestion() {
     return
   }
 
+  isChangingQuestion.value = true
+  isCardFlipped.value = false
   questionsIndex.value -= 1
+
+  nextTick(() => {
+    isChangingQuestion.value = false
+  })
 }
 
 function goNextQuestion() {
@@ -639,7 +647,13 @@ function goNextQuestion() {
     return
   }
 
+  isChangingQuestion.value = true
+  isCardFlipped.value = false
   questionsIndex.value += 1
+
+  nextTick(() => {
+    isChangingQuestion.value = false
+  })
 
   /*
     Quando viene superata
@@ -832,7 +846,6 @@ onBeforeUnmount(() => {
       <div
         class="quiz-shell relative mx-auto w-full max-w-[1400px]"
         style="
-          --card-width: min(72vw, 760px);
           --card-height: 370px;
           --arrow-gap: 100px;
         "
@@ -883,9 +896,12 @@ onBeforeUnmount(() => {
 
             <div
               class="quiz-flip-card"
+              :key="questionsIndex"
               :class="{
                 'is-flipped':
-                  isCardFlipped
+                  isCardFlipped,
+                'no-flip-transition':
+                  isChangingQuestion
               }"
             >
 
@@ -1337,6 +1353,16 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.quiz-shell {
+  --card-width: min(72vw, 760px);
+}
+
+@media (min-width: 768px) and (max-width: 899px) {
+  .quiz-shell {
+    --card-width: 567px;
+  }
+}
+
 .quiz-flip-scene {
   perspective: 1800px;
 }
@@ -1355,6 +1381,10 @@ onBeforeUnmount(() => {
       1
     );
   will-change: transform;
+}
+
+.quiz-flip-card.no-flip-transition {
+  transition: none;
 }
 
 .quiz-flip-card.is-flipped {

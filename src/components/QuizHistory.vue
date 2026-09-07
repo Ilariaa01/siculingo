@@ -1,8 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 
 const history = ref([])
 const expandedQuiz = ref(null)
+const quizCards = ref([])
 
 const QUESTIONS_TOTAL = 24
 const QUESTIONS_REQUIRED = 15
@@ -49,12 +50,20 @@ function clearHistory() {
   expandedQuiz.value = null
 }
 
-function toggleQuiz(index) {
+async function toggleQuiz(index) {
   if (expandedQuiz.value === index) {
     expandedQuiz.value = null
-  } else {
-    expandedQuiz.value = index
+    return
   }
+
+  expandedQuiz.value = index
+
+  await nextTick()
+
+  quizCards.value[index]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
 }
 
 function formatDate(dateValue) {
@@ -147,12 +156,12 @@ onMounted(() => {
 
 <template>
   <section
-    class="min-h-full w-full bg-[#F7F8FC] px-4 py-8 sm:px-6 sm:py-10"
+    class="history-page flex min-h-full w-full flex-col items-center bg-[#F7F8FC] px-4 py-8 sm:px-6 sm:py-10"
   >
-    <div class="mx-auto w-full max-w-[1095px]">
+    <div class="history-content flex h-auto max-h-[75vh] min-h-0 w-full max-w-[1095px] flex-col overflow-hidden rounded-lg bg-white p-6 shadow-[0_18px_40px_rgba(0,0,0,0.12)]">
 
       <!-- TITOLO E AZIONI -->
-      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div class="mb-6 flex flex-none flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1
             class="text-[2.7rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
@@ -176,11 +185,13 @@ onMounted(() => {
         </button>
       </div>
 
-      <!-- NESSUN QUIZ -->
-      <div
-        v-if="sortedHistory.length === 0"
-        class="rounded-[28px] bg-white px-6 py-10 text-center shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
-      >
+      <div class="history-scroll min-h-0 max-h-[350px] space-y-4 overflow-y-auto pr-1">
+
+        <!-- NESSUN QUIZ -->
+        <div
+          v-if="sortedHistory.length === 0"
+          class="rounded-[28px] bg-white px-6 py-10 text-center"
+        >
         <h2
           class="text-2xl font-bold text-[#171E32]"
         >
@@ -192,18 +203,16 @@ onMounted(() => {
         >
           Quando completerai un quiz, il risultato apparirà qui.
         </p>
-      </div>
+        </div>
 
       <!-- ELENCO QUIZ -->
-      <div
-        v-else
-        class="flex flex-col gap-4"
-      >
+      <template v-else>
 
         <article
           v-for="(quiz, index) in sortedHistory"
           :key="quiz.id ?? index"
-          class="overflow-hidden rounded-[28px] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
+          ref="quizCards"
+          class="mx-6 overflow-hidden rounded-[28px] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
         >
 
           <!-- SCHEDA PRINCIPALE -->
@@ -282,7 +291,7 @@ onMounted(() => {
           <!-- DETTAGLI -->
           <div
             v-if="expandedQuiz === index"
-            class="border-t border-[#E2E4EA] bg-[#FAFAFC] px-5 py-5 sm:px-6"
+            class="history-details max-h-[calc(75vh-220px)] overflow-y-auto border-t border-[#E2E4EA] bg-[#FAFAFC] px-5 py-5 sm:px-6"
           >
 
             <!-- STATISTICHE -->
@@ -419,8 +428,16 @@ onMounted(() => {
 
         </article>
 
+      </template>
+
       </div>
 
     </div>
   </section>
 </template>
+
+<style scoped>
+.history-scroll {
+  scrollbar-gutter: stable;
+}
+</style>
