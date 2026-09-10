@@ -35,6 +35,7 @@ const isAnswering = ref(false)
 const isCardFlipped = ref(false)
 const isChangingQuestion = ref(false)
 const explanationDetails = ref(null)
+const answeredQuestions = ref([])
 
 /*
   Possibili schermate:
@@ -231,6 +232,51 @@ function resetCardState() {
   explanationDetails.value = null
 }
 
+function rebuildAnswerResults() {
+  questionsOk.value = answeredQuestions.value
+    .filter((entry) => entry?.correct)
+    .map((entry) => entry.question)
+
+  questionsKo.value = answeredQuestions.value
+    .filter((entry) => entry && !entry.correct)
+    .map((entry) => entry.question)
+}
+
+function restoreQuestionState() {
+  const savedAnswer =
+    answeredQuestions.value[questionsIndex.value]
+
+  if (!savedAnswer || !currentQuestion.value) {
+    resetCardState()
+    return
+  }
+
+  clearFeedbackTimer()
+
+  const selectedAnswer =
+    currentQuestion.value.answers[savedAnswer.answerIndex]
+
+  const correctAnswer =
+    currentQuestion.value.answers.find(
+      (item) => item.correct
+    ) ?? null
+
+  answerFeedback.value = {
+    index: savedAnswer.answerIndex,
+    correct: savedAnswer.correct,
+  }
+
+  explanationDetails.value = buildExplanationDetails(
+    currentQuestion.value,
+    selectedAnswer,
+    correctAnswer,
+    savedAnswer.correct
+  )
+
+  isAnswering.value = false
+  isCardFlipped.value = true
+}
+
 /* =========================================================
    RANDOMIZZAZIONE RISPOSTE
    ========================================================= */
@@ -425,7 +471,8 @@ function onAnswerSelected({
   if (
     !currentQuestion.value ||
     isAnswering.value ||
-    isCardFlipped.value
+    isCardFlipped.value ||
+    answeredQuestions.value[questionsIndex.value]
   ) {
     return
   }
@@ -453,15 +500,13 @@ function onAnswerSelected({
     return
   }
 
-  if (selectedAnswer.correct) {
-    questionsOk.value.push(
-      questionToStore
-    )
-  } else {
-    questionsKo.value.push(
-      questionToStore
-    )
+  answeredQuestions.value[questionsIndex.value] = {
+    answerIndex,
+    correct: selectedAnswer.correct,
+    question: questionToStore,
   }
+
+  rebuildAnswerResults()
 
   isAnswering.value = true
 
@@ -503,7 +548,7 @@ function onAnswerSelected({
 watch(
   () => questionsIndex.value,
   () => {
-    resetCardState()
+    restoreQuestionState()
   }
 )
 
@@ -612,6 +657,8 @@ function restartQuiz() {
 
   questionsIndex.value = 0
 
+  answeredQuestions.value = []
+
   questionsOk.value = []
 
   questionsKo.value = []
@@ -680,9 +727,7 @@ function answerRandomly() {
 
   resetCardState()
 
-  questionsOk.value = []
-
-  questionsKo.value = []
+  answeredQuestions.value = []
 
   for (
     const item of questions.value
@@ -702,20 +747,14 @@ function answerRandomly() {
         randomIndex
       )
 
-    if (
-      question.answers[
-        randomIndex
-      ].correct
-    ) {
-      questionsOk.value.push(
-        questionToStore
-      )
-    } else {
-      questionsKo.value.push(
-        questionToStore
-      )
-    }
+    answeredQuestions.value.push({
+      answerIndex: randomIndex,
+      correct: question.answers[randomIndex].correct,
+      question: questionToStore,
+    })
   }
+
+  rebuildAnswerResults()
 
   questionsIndex.value =
     questions.value.length
@@ -1083,28 +1122,6 @@ onBeforeUnmount(() => {
                         explanationDetails?.usageExplanation ||
                         ''
                       }})
-                    </p>
-
-                    <p
-                      v-if="
-                        !answerFeedback?.correct &&
-                        explanationDetails?.meanings?.length
-                      "
-                      class="mt-3 text-[1.1rem] leading-snug text-[#171E32]"
-                    >
-
-                      <span
-                        class="font-semibold"
-                      >
-                        Significati:
-                      </span>
-
-                      {{
-                        explanationDetails.meanings.join(
-                          ' ; '
-                        )
-                      }}
-
                     </p>
 
                   </article>

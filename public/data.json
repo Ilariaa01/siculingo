@@ -1,20 +1,29 @@
 [
-{
+  {
     "question": {
       "value": "Pastranu",
       "text": "Cosa significa la parola Pastranu?",
       "answers": [
-        { "text": "Cappotto", "correct": true },
-        { "text": "Mantello", "correct": false },
-        { "text": "Grembiule", "correct": false },
-        { "text": "Cappello", "correct": false }
+        {
+          "text": "Cappotto",
+          "correct": true
+        },
+        {
+          "text": "Mantello",
+          "correct": false
+        },
+        {
+          "text": "Grembiule",
+          "correct": false
+        },
+        {
+          "text": "Cappello",
+          "correct": false
+        }
       ],
       "explanation": {
-        "correctSubtitle": "Cappotto",
         "usageExample": "Pigghia u pastranu ca fora fa friddu.",
-        "usageExplanation": "Prendi il cappotto che fuori fa freddo.",
-        "origin": "La parola deriva dal nome di Pastrana, una città della provincia di Guadalajara, in Spagna.",
-        "curiosity":"Il nome viene dal ricchissimo e raffinatissimo Duca di Pastrana, un nobile spagnolo del Cinquecento. È ironico che il suo titolo nobiliare sia finito per indicare, nel popolo, un cappotto vecchio, povero e sformato."
+        "usageExplanation": "Prendi il cappotto che fuori fa freddo."
       }
     }
   },
@@ -23,17 +32,27 @@
       "value": "Cantaranu",
       "text": "Cosa significa la parola Cantaranu?",
       "answers": [
-        { "text": "Comò", "correct": true },
-        { "text": "Letto", "correct": false },
-        { "text": "Tavolo", "correct": false },
-        { "text": "Armadio", "correct": false }
+        {
+          "text": "Comò",
+          "correct": true
+        },
+        {
+          "text": "Letto",
+          "correct": false
+        },
+        {
+          "text": "Tavolo",
+          "correct": false
+        },
+        {
+          "text": "Armadio",
+          "correct": false
+        }
       ],
       "explanation": {
         "correctSubtitle": "Comò",
-        "usageExample": "",
-        "usageExplanation": "",
-        "origin": "",
-        "curiosity": ""
+        "usageExample": "Sarva i robbi intra u cantaranu.",
+        "usageExplanation": "Concerva i vestiti dentro il comò."
       }
     }
   },
@@ -42,12 +61,28 @@
       "value": "Buffetta",
       "text": "Cosa significa la parola Buffetta?",
       "answers": [
-        { "text": "Tavolo", "correct": true },
-        { "text": "Sedia", "correct": false },
-        { "text": "Panca", "correct": false },
-        { "text": "Scaffale", "correct": false }
-      ]
-      
+        {
+          "text": "Tavolo",
+          "correct": true
+        },
+        {
+          "text": "Sedia",
+          "correct": false
+        },
+        {
+          "text": "Panca",
+          "correct": false
+        },
+        {
+          "text": "Scaffale",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Tavolo",
+        "usageExample": "Posa i ciavi supra a buffetta.",
+        "usageExplanation": "Appoggia le chiavi sul tavolo."
+      }
     }
   },
   {
@@ -55,11 +90,28 @@
       "value": "Ghiarra",
       "text": "Cosa significa la parola Ghiarra?",
       "answers": [
-        { "text": "Giara", "correct": true },
-        { "text": "Brocca", "correct": false },
-        { "text": "Bottiglia", "correct": false },
-        { "text": "Secchio", "correct": false }
-      ]
+        {
+          "text": "Giara",
+          "correct": true
+        },
+        {
+          "text": "Brocca",
+          "correct": false
+        },
+        {
+          "text": "Bottiglia",
+          "correct": false
+        },
+        {
+          "text": "Secchio",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Giara",
+        "usageExample": "L'acqua è frisca picchì è nta ghiarra.",
+        "usageExplanation": "L'acqua è fresca perché è nella giara."
+      }
     }
   },
   {
@@ -67,11 +119,28 @@
       "value": "Cudduruni",
       "text": "Cosa significa la parola Cudduruni?",
       "answers": [
-        { "text": "Pane cotto male", "correct": true },
-        { "text": "Pane dolce", "correct": false },
-        { "text": "Biscotto", "correct": false },
-        { "text": "Focaccia", "correct": false }
-      ]
+        {
+          "text": "Pane cotto male",
+          "correct": true
+        },
+        {
+          "text": "Pane dolce",
+          "correct": false
+        },
+        {
+          "text": "Biscotto",
+          "correct": false
+        },
+        {
+          "text": "Focaccia",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Pane cotto male",
+        "usageExample": "Stu pani è propriu un cudduruni.",
+        "usageExplanation": "Questo pane è proprio cotto male."
+      }
     }
   },
   {
@@ -79,11 +148,28 @@
       "value": "Fanenti",
       "text": "Cosa significa la parola Fanenti?",
       "answers": [
-        { "text": "Fannullone", "correct": true },
-        { "text": "Lavoratore", "correct": false },
-        { "text": "Studente", "correct": false },
-        { "text": "Contadino", "correct": false }
-      ]
+        {
+          "text": "Fannullone",
+          "correct": true
+        },
+        {
+          "text": "Lavoratore",
+          "correct": false
+        },
+        {
+          "text": "Studente",
+          "correct": false
+        },
+        {
+          "text": "Contadino",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Fannullone",
+        "usageExample": "Nun fari u fanenti e datti na mossa.",
+        "usageExplanation": "Non fare il fannullone e datti una mossa."
+      }
     }
   },
   {
@@ -91,11 +177,28 @@
       "value": "Cuppinu",
       "text": "Cosa significa la parola Cuppinu?",
       "answers": [
-        { "text": "Mestolo", "correct": true },
-        { "text": "Cucchiaio", "correct": false },
-        { "text": "Forchetta", "correct": false },
-        { "text": "Coltello", "correct": false }
-      ]
+        {
+          "text": "Mestolo",
+          "correct": true
+        },
+        {
+          "text": "Cucchiaio",
+          "correct": false
+        },
+        {
+          "text": "Forchetta",
+          "correct": false
+        },
+        {
+          "text": "Coltello",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Mestolo",
+        "usageExample": "Pigghia u cuppinu pi servire a minestra.",
+        "usageExplanation": "Prendi il mestolo per servire la minestra."
+      }
     }
   },
   {
@@ -103,11 +206,28 @@
       "value": "Suttanino",
       "text": "Cosa significa la parola Suttanino?",
       "answers": [
-        { "text": "Sottana / sottoveste", "correct": true },
-        { "text": "Camicia", "correct": false },
-        { "text": "Gonna", "correct": false },
-        { "text": "Maglione", "correct": false }
-      ]
+        {
+          "text": "Sottana / Sottoveste",
+          "correct": true
+        },
+        {
+          "text": "Camicia",
+          "correct": false
+        },
+        {
+          "text": "Gonna",
+          "correct": false
+        },
+        {
+          "text": "Maglione",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Sottana / Sottoveste",
+        "usageExample": "Mettiti u suttaninu prima di vistìriti.",
+        "usageExplanation": "Indossa la sottoveste prima di vestirti."
+      }
     }
   },
   {
@@ -115,23 +235,28 @@
       "value": "Ammucciari",
       "text": "Cosa significa il verbo Ammucciari?",
       "answers": [
-        { "text": "Nascondere", "correct": true },
-        { "text": "Mostrare", "correct": false },
-        { "text": "Aprire", "correct": false },
-        { "text": "Cercare", "correct": false }
-      ]
-    }
-  },
-  {
-    "question": {
-      "value": "Abbissare",
-      "text": "Cosa significa il verbo Abbissare?",
-      "answers": [
-        { "text": "Rompere", "correct": true },
-        { "text": "Riparare", "correct": false },
-        { "text": "Sollevare", "correct": false },
-        { "text": "Legare", "correct": false }
-      ]
+        {
+          "text": "Nascondere",
+          "correct": true
+        },
+        {
+          "text": "Mostrare",
+          "correct": false
+        },
+        {
+          "text": "Aprire",
+          "correct": false
+        },
+        {
+          "text": "Cercare",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Nascondere",
+        "usageExample": "Ammuccia i sordi prima ca te ruobbunu.",
+        "usageExplanation": "Nascondi i soldi prima che te li rubino."
+      }
     }
   },
   {
@@ -139,11 +264,28 @@
       "value": "Bunaca",
       "text": "Cosa significa la parola Bunaca?",
       "answers": [
-        { "text": "Giacca", "correct": true },
-        { "text": "Cravatta", "correct": false },
-        { "text": "Cappello", "correct": false },
-        { "text": "Cintura", "correct": false }
-      ]
+        {
+          "text": "Giacca",
+          "correct": true
+        },
+        {
+          "text": "Cravatta",
+          "correct": false
+        },
+        {
+          "text": "Cappello",
+          "correct": false
+        },
+        {
+          "text": "Cintura",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Giacca",
+        "usageExample": "Pigghia a bunaca ca fora fa friddu.",
+        "usageExplanation": "Prendi la giacca che fuori fa freddo."
+      }
     }
   },
   {
@@ -151,11 +293,28 @@
       "value": "Causi",
       "text": "Cosa significa la parola Causi?",
       "answers": [
-        { "text": "Pantaloni", "correct": true },
-        { "text": "Calze", "correct": false },
-        { "text": "Scarpe", "correct": false },
-        { "text": "Guanti", "correct": false }
-      ]
+        {
+          "text": "Pantaloni",
+          "correct": true
+        },
+        {
+          "text": "Calze",
+          "correct": false
+        },
+        {
+          "text": "Scarpe",
+          "correct": false
+        },
+        {
+          "text": "Guanti",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Pantaloni",
+        "usageExample": "Mettiti i causi novi.",
+        "usageExplanation": "Indossa i pantaloni nuovi."
+      }
     }
   },
   {
@@ -163,23 +322,28 @@
       "value": "Cascia",
       "text": "Cosa significa la parola Cascia?",
       "answers": [
-        { "text": "Cassetta", "correct": true },
-        { "text": "Cassa", "correct": false },
-        { "text": "Sedia", "correct": false },
-        { "text": "Cassaforte", "correct": false }
-      ]
-    }
-  },
-  {
-    "question": {
-      "value": "Nzaccari",
-      "text": "Cosa significa il verbo Nzaccari?",
-      "answers": [
-        { "text": "Raccogliere", "correct": true },
-        { "text": "Gettare", "correct": false },
-        { "text": "Tagliare", "correct": false },
-        { "text": "Nascondere", "correct": false }
-      ]
+        {
+          "text": "Cassa",
+          "correct": true
+        },
+        {
+          "text": "Cesto",
+          "correct": false
+        },
+        {
+          "text": "Sedia",
+          "correct": false
+        },
+        {
+          "text": "Cassaforte",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Cassa",
+        "usageExample": "Misi a frutta nta cascia.",
+        "usageExplanation": "Ho messo la frutta nella cassa."
+      }
     }
   },
   {
@@ -187,11 +351,28 @@
       "value": "Cina",
       "text": "Cosa significa la parola Cina?",
       "answers": [
-        { "text": "Piena", "correct": true },
-        { "text": "Vuota", "correct": false },
-        { "text": "Lunga", "correct": false },
-        { "text": "Stretta", "correct": false }
-      ]
+        {
+          "text": "Piena",
+          "correct": true
+        },
+        {
+          "text": "Vuota",
+          "correct": false
+        },
+        {
+          "text": "Lunga",
+          "correct": false
+        },
+        {
+          "text": "Stretta",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Piena",
+        "usageExample": "A quartara è cina ri acqua.",
+        "usageExplanation": "La brocca è piena d'acqua."
+      }
     }
   },
   {
@@ -199,11 +380,28 @@
       "value": "Camurria",
       "text": "Cosa significa la parola Camurria?",
       "answers": [
-        { "text": "Seccatura", "correct": true },
-        { "text": "Festa", "correct": false },
-        { "text": "Fortuna", "correct": false },
-        { "text": "Pausa", "correct": false }
-      ]
+        {
+          "text": "Seccatura",
+          "correct": true
+        },
+        {
+          "text": "Festa",
+          "correct": false
+        },
+        {
+          "text": "Fortuna",
+          "correct": false
+        },
+        {
+          "text": "Pausa",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Seccatura",
+        "usageExample": "Chi camurria ca siti!",
+        "usageExplanation": "Che seccatura che siete!"
+      }
     }
   },
   {
@@ -211,11 +409,28 @@
       "value": "Cudduredda",
       "text": "Cosa significa la parola Cudduredda?",
       "answers": [
-        { "text": "Pane di pasta dura", "correct": true },
-        { "text": "Torta", "correct": false },
-        { "text": "Pasta fresca", "correct": false },
-        { "text": "Biscotto", "correct": false }
-      ]
+        {
+          "text": "Pane di pasta dura",
+          "correct": true
+        },
+        {
+          "text": "Torta",
+          "correct": false
+        },
+        {
+          "text": "Pasta fresca",
+          "correct": false
+        },
+        {
+          "text": "Biscotto",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Pane di pasta dura",
+        "usageExample": "A ma nanna facìa i cuddureddi ogni sumana.",
+        "usageExplanation": "Mia nonna preparava il pane di pasta dura ogni settimana."
+      }
     }
   },
   {
@@ -223,23 +438,57 @@
       "value": "Scanziari",
       "text": "Cosa significa il verbo Scanziari?",
       "answers": [
-        { "text": "Evitare", "correct": true },
-        { "text": "Correre", "correct": false },
-        { "text": "Parlare", "correct": false },
-        { "text": "Guardare", "correct": false }
-      ]
+        {
+          "text": "Evitare",
+          "correct": true
+        },
+        {
+          "text": "Correre",
+          "correct": false
+        },
+        {
+          "text": "Parlare",
+          "correct": false
+        },
+        {
+          "text": "Guardare",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Evitare",
+        "usageExample": "Scanzia sa petra.",
+        "usageExplanation": "Evita quella pietra."
+      }
     }
   },
   {
     "question": {
-      "value": "Ammatala",
-      "text": "Cosa significa l'espressione Ammatala?",
+      "value": "Ammatula",
+      "text": "Cosa significa la parola Ammatula?",
       "answers": [
-        { "text": "A vanvera", "correct": true },
-        { "text": "Con calma", "correct": false },
-        { "text": "Bene", "correct": false },
-        { "text": "In silenzio", "correct": false }
-      ]
+        {
+          "text": "Inutilmente",
+          "correct": true
+        },
+        {
+          "text": "Velocemente",
+          "correct": false
+        },
+        {
+          "text": "Pian piano",
+          "correct": false
+        },
+        {
+          "text": "Di nascosto",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Inutilmente",
+        "usageExample": "Parra ammatula senza pinsari.",
+        "usageExplanation": "Parla inutilmente senza riflettere."
+      }
     }
   },
   {
@@ -247,11 +496,28 @@
       "value": "Arruspighiari",
       "text": "Cosa significa il verbo Arruspighiari?",
       "answers": [
-        { "text": "Svegliare", "correct": true },
-        { "text": "Addormentare", "correct": false },
-        { "text": "Fermare", "correct": false },
-        { "text": "Nascondere", "correct": false }
-      ]
+        {
+          "text": "Svegliare",
+          "correct": true
+        },
+        {
+          "text": "Addormentare",
+          "correct": false
+        },
+        {
+          "text": "Fermare",
+          "correct": false
+        },
+        {
+          "text": "Nascondere",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Svegliare",
+        "usageExample": "Arruspigghia u picciriddu ca è tardu.",
+        "usageExplanation": "Sveglia il bambino perché è tardi."
+      }
     }
   },
   {
@@ -259,11 +525,28 @@
       "value": "Sciusciare",
       "text": "Cosa significa il verbo Sciusciare?",
       "answers": [
-        { "text": "Soffiare", "correct": true },
-        { "text": "Urlare", "correct": false },
-        { "text": "Camminare", "correct": false },
-        { "text": "Saltare", "correct": false }
-      ]
+        {
+          "text": "Soffiare",
+          "correct": true
+        },
+        {
+          "text": "Urlare",
+          "correct": false
+        },
+        {
+          "text": "Camminare",
+          "correct": false
+        },
+        {
+          "text": "Saltare",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Soffiare",
+        "usageExample": "Sciuscia supra u luci pi farlo addumari.",
+        "usageExplanation": "Soffia sul fuoco per farlo accendere."
+      }
     }
   },
   {
@@ -271,11 +554,28 @@
       "value": "Zonnu",
       "text": "Cosa significa la parola Zonnu?",
       "answers": [
-        { "text": "Stupido", "correct": true },
-        { "text": "Gentile", "correct": false },
-        { "text": "Svelto", "correct": false },
-        { "text": "Allegro", "correct": false }
-      ]
+        {
+          "text": "Stupido",
+          "correct": true
+        },
+        {
+          "text": "Gentile",
+          "correct": false
+        },
+        {
+          "text": "Svelto",
+          "correct": false
+        },
+        {
+          "text": "Allegro",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Stupido",
+        "usageExample": "Nun fari u zonnu.",
+        "usageExplanation": "Non fare lo stupido."
+      }
     }
   },
   {
@@ -283,11 +583,28 @@
       "value": "Scifu",
       "text": "Cosa significa la parola Scifu?",
       "answers": [
-        { "text": "Contenitore per cibo dei maiali", "correct": true },
-        { "text": "Pentola", "correct": false },
-        { "text": "Borsa", "correct": false },
-        { "text": "Mobile", "correct": false }
-      ]
+        {
+          "text": "Contenitore per cibo dei maiali",
+          "correct": true
+        },
+        {
+          "text": "Pentola",
+          "correct": false
+        },
+        {
+          "text": "Borsa",
+          "correct": false
+        },
+        {
+          "text": "Mobile",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Contenitore per cibo dei maiali",
+        "usageExample": "Metti u mangiari no scifu.",
+        "usageExplanation": "Metti il cibo nel contenitore per i maiali."
+      }
     }
   },
   {
@@ -295,11 +612,28 @@
       "value": "Scirretta",
       "text": "Cosa significa la parola Scirretta?",
       "answers": [
-        { "text": "Carrozzino / piccolo carro", "correct": true },
-        { "text": "Bicicletta", "correct": false },
-        { "text": "Carro armato", "correct": false },
-        { "text": "Valigia", "correct": false }
-      ]
+        {
+          "text": "Carrozzino / Piccolo carro",
+          "correct": true
+        },
+        {
+          "text": "Bicicletta",
+          "correct": false
+        },
+        {
+          "text": "Carro armato",
+          "correct": false
+        },
+        {
+          "text": "Valigia",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Carrozzino / Piccolo carro",
+        "usageExample": "Mi fici u giro ca scirretta.",
+        "usageExplanation": "Ho fatto un giro con il piccolo carro."
+      }
     }
   },
   {
@@ -307,11 +641,28 @@
       "value": "Tannura",
       "text": "Cosa significa la parola Tannura?",
       "answers": [
-        { "text": "Focolare / cucina a legna", "correct": true },
-        { "text": "Forno elettrico", "correct": false },
-        { "text": "Camino moderno", "correct": false },
-        { "text": "Lavandino", "correct": false }
-      ]
+        {
+          "text": "Focolare / Cucina a legna",
+          "correct": true
+        },
+        {
+          "text": "Forno elettrico",
+          "correct": false
+        },
+        {
+          "text": "Camino moderno",
+          "correct": false
+        },
+        {
+          "text": "Lavandino",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Focolare / Cucina a legna",
+        "usageExample": "A tannura era sempri addumata.",
+        "usageExplanation": "Il focolare era sempre acceso."
+      }
     }
   },
   {
@@ -319,11 +670,28 @@
       "value": "Curria",
       "text": "Cosa significa la parola Curria?",
       "answers": [
-        { "text": "Cintura", "correct": true },
-        { "text": "Collana", "correct": false },
-        { "text": "Giacca", "correct": false },
-        { "text": "Cappello", "correct": false }
-      ]
+        {
+          "text": "Cintura",
+          "correct": true
+        },
+        {
+          "text": "Collana",
+          "correct": false
+        },
+        {
+          "text": "Giacca",
+          "correct": false
+        },
+        {
+          "text": "Cappello",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Cintura",
+        "usageExample": "Srinci a curria ca è troppu larica.",
+        "usageExplanation": "Stringi la cintura che è troppo larga."
+      }
     }
   },
   {
@@ -331,11 +699,28 @@
       "value": "Cutra",
       "text": "Cosa significa la parola Cutra?",
       "answers": [
-        { "text": "Coperta di lana", "correct": true },
-        { "text": "Tovaglia", "correct": false },
-        { "text": "Tenda", "correct": false },
-        { "text": "Fodera", "correct": false }
-      ]
+        {
+          "text": "Coperta di lana",
+          "correct": true
+        },
+        {
+          "text": "Tovaglia",
+          "correct": false
+        },
+        {
+          "text": "Tenda",
+          "correct": false
+        },
+        {
+          "text": "Fodera",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Coperta di lana",
+        "usageExample": "Metti a cutra no liettu ca fa friddu.",
+        "usageExplanation": "Mettiti la coperta nel letto perché fa freddo."
+      }
     }
   },
   {
@@ -343,11 +728,28 @@
       "value": "Vagghila",
       "text": "Cosa significa la parola Vagghila?",
       "answers": [
-        { "text": "Bacinella", "correct": true },
-        { "text": "Secchio", "correct": false },
-        { "text": "Bottiglia", "correct": false },
-        { "text": "Scodella", "correct": false }
-      ]
+        {
+          "text": "Bacinella",
+          "correct": true
+        },
+        {
+          "text": "Secchio",
+          "correct": false
+        },
+        {
+          "text": "Bottiglia",
+          "correct": false
+        },
+        {
+          "text": "Scodella",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Bacinella",
+        "usageExample": "Inci a vagghila ri acqua caura.",
+        "usageExplanation": "Riempi la bacinella d'acqua calda."
+      }
     }
   },
   {
@@ -355,11 +757,28 @@
       "value": "Maccu",
       "text": "Cosa significa la parola Maccu?",
       "answers": [
-        { "text": "Fave sgusciate", "correct": true },
-        { "text": "Ceci", "correct": false },
-        { "text": "Fagioli", "correct": false },
-        { "text": "Piselli", "correct": false }
-      ]
+        {
+          "text": "Fave sgusciate",
+          "correct": true
+        },
+        {
+          "text": "Ceci",
+          "correct": false
+        },
+        {
+          "text": "Fagioli",
+          "correct": false
+        },
+        {
+          "text": "Piselli",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Fave sgusciate",
+        "usageExample": "A mia non mi piaci u maccu.",
+        "usageExplanation": "A me non piacciono le fave sgusciate."
+      }
     }
   },
   {
@@ -367,11 +786,28 @@
       "value": "Ciciri",
       "text": "Cosa significa la parola Ciciri?",
       "answers": [
-        { "text": "Ceci", "correct": true },
-        { "text": "Lenticchie", "correct": false },
-        { "text": "Fave", "correct": false },
-        { "text": "Patate", "correct": false }
-      ]
+        {
+          "text": "Ceci",
+          "correct": true
+        },
+        {
+          "text": "Lenticchie",
+          "correct": false
+        },
+        {
+          "text": "Fave",
+          "correct": false
+        },
+        {
+          "text": "Patate",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Ceci",
+        "usageExample": "A mia nun mi piaciunu i ciciri.",
+        "usageExplanation": "A me non piacciono i ceci."
+      }
     }
   },
   {
@@ -379,11 +815,28 @@
       "value": "Calacavisi",
       "text": "Cosa significa la parola Calacavisi?",
       "answers": [
-        { "text": "Arachidi", "correct": true },
-        { "text": "Noci", "correct": false },
-        { "text": "Mandorle", "correct": false },
-        { "text": "Pistacchi", "correct": false }
-      ]
+        {
+          "text": "Arachidi",
+          "correct": true
+        },
+        {
+          "text": "Noci",
+          "correct": false
+        },
+        {
+          "text": "Mandorle",
+          "correct": false
+        },
+        {
+          "text": "Pistacchi",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Arachidi",
+        "usageExample": "Accatta i calacavisi pi mangiarannilli.",
+        "usageExplanation": "Compra gli arachidi per mangiarceli."
+      }
     }
   },
   {
@@ -391,11 +844,28 @@
       "value": "Zitu",
       "text": "Cosa significa la parola Zitu?",
       "answers": [
-        { "text": "Fidanzato", "correct": true },
-        { "text": "Fratello", "correct": false },
-        { "text": "Cugino", "correct": false },
-        { "text": "Amico", "correct": false }
-      ]
+        {
+          "text": "Fidanzato",
+          "correct": true
+        },
+        {
+          "text": "Fratello",
+          "correct": false
+        },
+        {
+          "text": "Cugino",
+          "correct": false
+        },
+        {
+          "text": "Amico",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Fidanzato",
+        "usageExample": "U ma zitu veni stasira.",
+        "usageExplanation": "Il mio fidanzato viene stasera."
+      }
     }
   },
   {
@@ -403,23 +873,57 @@
       "value": "Scarparu",
       "text": "Cosa significa la parola Scarparu?",
       "answers": [
-        { "text": "Calzolaio", "correct": true },
-        { "text": "Sarto", "correct": false },
-        { "text": "Muratore", "correct": false },
-        { "text": "Barbiere", "correct": false }
-      ]
+        {
+          "text": "Calzolaio",
+          "correct": true
+        },
+        {
+          "text": "Sarto",
+          "correct": false
+        },
+        {
+          "text": "Muratore",
+          "correct": false
+        },
+        {
+          "text": "Barbiere",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Calzolaio",
+        "usageExample": "Porta i scarpi no scarparu.",
+        "usageExplanation": "Porta le scarpe dal calzolaio."
+      }
     }
   },
   {
     "question": {
-      "value": "Furmàghi",
-      "text": "Cosa significa la parola Furmàghi?",
+      "value": "Furmághi",
+      "text": "Cosa significa la parola Furmághi?",
       "answers": [
-        { "text": "Formaggio", "correct": true },
-        { "text": "Burro", "correct": false },
-        { "text": "Yogurt", "correct": false },
-        { "text": "Panna", "correct": false }
-      ]
+        {
+          "text": "Formaggio",
+          "correct": true
+        },
+        {
+          "text": "Burro",
+          "correct": false
+        },
+        {
+          "text": "Yogurt",
+          "correct": false
+        },
+        {
+          "text": "Panna",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Formaggio",
+        "usageExample": "Misi u furmàghi supra a pasta.",
+        "usageExplanation": "Ho messo il formaggio sulla pasta."
+      }
     }
   },
   {
@@ -427,11 +931,28 @@
       "value": "Puddicinu",
       "text": "Cosa significa la parola Puddicinu?",
       "answers": [
-        { "text": "Pulcino", "correct": true },
-        { "text": "Gallina", "correct": false },
-        { "text": "Tacchino", "correct": false },
-        { "text": "Anatra", "correct": false }
-      ]
+        {
+          "text": "Pulcino",
+          "correct": true
+        },
+        {
+          "text": "Gallina",
+          "correct": false
+        },
+        {
+          "text": "Tacchino",
+          "correct": false
+        },
+        {
+          "text": "Anatra",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Pulcino",
+        "usageExample": "U puddicinu sta crisciennu ogni ghiuorno.",
+        "usageExplanation": "Il pulcino sta crescendo ogni giorno."
+      }
     }
   },
   {
@@ -439,10 +960,22 @@
       "value": "Cipudda",
       "text": "Cosa significa la parola Cipudda?",
       "answers": [
-        { "text": "Cipolla", "correct": true },
-        { "text": "Carota", "correct": false },
-        { "text": "Patata", "correct": false },
-        { "text": "Aglio", "correct": false }
+        {
+          "text": "Cipolla",
+          "correct": true
+        },
+        {
+          "text": "Carota",
+          "correct": false
+        },
+        {
+          "text": "Patata",
+          "correct": false
+        },
+        {
+          "text": "Aglio",
+          "correct": false
+        }
       ]
     }
   },
@@ -451,11 +984,28 @@
       "value": "Sciavuru",
       "text": "Cosa significa la parola Sciavuru?",
       "answers": [
-        { "text": "Profumo / odore buono", "correct": true },
-        { "text": "Rumore forte", "correct": false },
-        { "text": "Sapore amaro", "correct": false },
-        { "text": "Colore scuro", "correct": false }
-      ]
+        {
+          "text": "Profumo / Odore buono",
+          "correct": true
+        },
+        {
+          "text": "Rumore forte",
+          "correct": false
+        },
+        {
+          "text": "Sapore amaro",
+          "correct": false
+        },
+        {
+          "text": "Colore scuro",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Profumo / Odore buono",
+        "usageExample": "Chi sciavuru ri pani cauru!",
+        "usageExplanation": "Che profumo di pane caldo!"
+      }
     }
   },
   {
@@ -463,10 +1013,22 @@
       "value": "Ciovu",
       "text": "Cosa significa la parola Ciovu?",
       "answers": [
-        { "text": "Chiodo", "correct": true },
-        { "text": "Vite", "correct": false },
-        { "text": "Martello", "correct": false },
-        { "text": "Sega", "correct": false }
+        {
+          "text": "Chiodo",
+          "correct": true
+        },
+        {
+          "text": "Vite",
+          "correct": false
+        },
+        {
+          "text": "Martello",
+          "correct": false
+        },
+        {
+          "text": "Sega",
+          "correct": false
+        }
       ]
     }
   },
@@ -475,11 +1037,28 @@
       "value": "Scaccia",
       "text": "Cosa significa la parola Scaccia?",
       "answers": [
-        { "text": "Focaccia", "correct": true },
-        { "text": "Torta", "correct": false },
-        { "text": "Biscotto", "correct": false },
-        { "text": "Pizza", "correct": false }
-      ]
+        {
+          "text": "Focaccia",
+          "correct": true
+        },
+        {
+          "text": "Torta",
+          "correct": false
+        },
+        {
+          "text": "Biscotto",
+          "correct": false
+        },
+        {
+          "text": "Pizza",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Focaccia",
+        "usageExample": "A scaccia ca mulunciana era bona.",
+        "usageExplanation": "La focaccia con la melanzana era buona."
+      }
     }
   },
   {
@@ -487,11 +1066,28 @@
       "value": "Favaluci",
       "text": "Cosa significa la parola Favaluci?",
       "answers": [
-        { "text": "Lumache", "correct": true },
-        { "text": "Chiocciole", "correct": false },
-        { "text": "Formiche", "correct": false },
-        { "text": "Cavallette", "correct": false }
-      ]
+        {
+          "text": "Lumache",
+          "correct": true
+        },
+        {
+          "text": "Chiocciole",
+          "correct": false
+        },
+        {
+          "text": "Formiche",
+          "correct": false
+        },
+        {
+          "text": "Cavallette",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Lumache",
+        "usageExample": "Duopu ca ciovi niesciuno i favaluci.",
+        "usageExplanation": "Dopo la pioggia escono le lumache."
+      }
     }
   },
   {
@@ -499,11 +1095,28 @@
       "value": "'Nnacari",
       "text": "Cosa significa il verbo 'Nnacari?",
       "answers": [
-        { "text": "Cullare / oscillare", "correct": true },
-        { "text": "Raccogliere", "correct": false },
-        { "text": "Rompere", "correct": false },
-        { "text": "Rallentare", "correct": false }
-      ]
+        {
+          "text": "Cullare / Oscillare",
+          "correct": true
+        },
+        {
+          "text": "Raccogliere",
+          "correct": false
+        },
+        {
+          "text": "Rompere",
+          "correct": false
+        },
+        {
+          "text": "Rallentare",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Cullare / Oscillare",
+        "usageExample": "Nnaca u picciriddu pi farlu rormiri.",
+        "usageExplanation": "Culla il bambino per farlo dormire."
+      }
     }
   },
   {
@@ -511,11 +1124,28 @@
       "value": "Scutuliare",
       "text": "Cosa significa il verbo Scutuliare?",
       "answers": [
-        { "text": "Scuotere", "correct": true },
-        { "text": "Stendere", "correct": false },
-        { "text": "Lavare", "correct": false },
-        { "text": "Tagliare", "correct": false }
-      ]
+        {
+          "text": "Scuotere",
+          "correct": true
+        },
+        {
+          "text": "Stendere",
+          "correct": false
+        },
+        {
+          "text": "Lavare",
+          "correct": false
+        },
+        {
+          "text": "Tagliare",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Scuotere",
+        "usageExample": "Scutulia u tappitu fora.",
+        "usageExplanation": "Scuoti il tappeto fuori."
+      }
     }
   },
   {
@@ -523,10 +1153,22 @@
       "value": "Scanzari",
       "text": "Cosa significa il verbo Scanzari?",
       "answers": [
-        { "text": "Evitare", "correct": true },
-        { "text": "Cercare", "correct": false },
-        { "text": "Mangiare", "correct": false },
-        { "text": "Parlare", "correct": false }
+        {
+          "text": "Evitare",
+          "correct": true
+        },
+        {
+          "text": "Cercare",
+          "correct": false
+        },
+        {
+          "text": "Mangiare",
+          "correct": false
+        },
+        {
+          "text": "Parlare",
+          "correct": false
+        }
       ]
     }
   },
@@ -535,11 +1177,28 @@
       "value": "Sciarriari",
       "text": "Cosa significa il verbo Sciarriari?",
       "answers": [
-        { "text": "Litigare", "correct": true },
-        { "text": "Ridere", "correct": false },
-        { "text": "Abbracciare", "correct": false },
-        { "text": "Dormire", "correct": false }
-      ]
+        {
+          "text": "Litigare",
+          "correct": true
+        },
+        {
+          "text": "Ridere",
+          "correct": false
+        },
+        {
+          "text": "Abbracciare",
+          "correct": false
+        },
+        {
+          "text": "Dormire",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Litigare",
+        "usageExample": "Nun vi sciarrìati pi nenti.",
+        "usageExplanation": "Non litigate per niente."
+      }
     }
   },
   {
@@ -547,11 +1206,28 @@
       "value": "Naca",
       "text": "Cosa significa la parola Naca?",
       "answers": [
-        { "text": "Culla", "correct": true },
-        { "text": "Barca", "correct": false },
-        { "text": "Sedia", "correct": false },
-        { "text": "Cesto", "correct": false }
-      ]
+        {
+          "text": "Culla",
+          "correct": true
+        },
+        {
+          "text": "Barca",
+          "correct": false
+        },
+        {
+          "text": "Sedia",
+          "correct": false
+        },
+        {
+          "text": "Cesto",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Culla",
+        "usageExample": "U picciriddu dormi nta naca.",
+        "usageExplanation": "Il bambino dorme nella culla."
+      }
     }
   },
   {
@@ -559,11 +1235,28 @@
       "value": "Mpanatigghia",
       "text": "Cosa significa la parola Mpanatigghia?",
       "answers": [
-        { "text": "Dolce tipico modicano", "correct": true },
-        { "text": "Pane fritto", "correct": false },
-        { "text": "Torta salata", "correct": false },
-        { "text": "Biscotto", "correct": false }
-      ]
+        {
+          "text": "Dolce tipico modicano",
+          "correct": true
+        },
+        {
+          "text": "Pane fritto",
+          "correct": false
+        },
+        {
+          "text": "Torta salata",
+          "correct": false
+        },
+        {
+          "text": "Biscotto",
+          "correct": false
+        }
+      ],
+      "explanation": {
+        "correctSubtitle": "Dolce tipico modicano",
+        "usageExample": "A mpanatigghia è na luccumia Murucana.",
+        "usageExplanation": "La mpanatigghia è un dolce tipico di Modica."
+      }
     }
   },
   {
@@ -571,10 +1264,22 @@
       "value": "Arruspigghiari",
       "text": "Cosa significa il verbo Arruspigghiari?",
       "answers": [
-        { "text": "Svegliare", "correct": true },
-        { "text": "Addormentare", "correct": false },
-        { "text": "Nascondere", "correct": false },
-        { "text": "Fermare", "correct": false }
+        {
+          "text": "Svegliare",
+          "correct": true
+        },
+        {
+          "text": "Addormentare",
+          "correct": false
+        },
+        {
+          "text": "Nascondere",
+          "correct": false
+        },
+        {
+          "text": "Fermare",
+          "correct": false
+        }
       ]
     }
   },
@@ -583,10 +1288,22 @@
       "value": "Ammatula",
       "text": "Cosa significa la parola Ammatula?",
       "answers": [
-        { "text": "Inutilmente", "correct": true },
-        { "text": "Velocemente", "correct": false },
-        { "text": "Pian piano", "correct": false },
-        { "text": "Di nascosto", "correct": false }
+        {
+          "text": "Inutilmente",
+          "correct": true
+        },
+        {
+          "text": "Velocemente",
+          "correct": false
+        },
+        {
+          "text": "Pian piano",
+          "correct": false
+        },
+        {
+          "text": "Di nascosto",
+          "correct": false
+        }
       ]
     }
   }
