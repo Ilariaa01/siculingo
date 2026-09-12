@@ -43,7 +43,7 @@ async function logout() {
 </script>
 
 <template>
-  <header v-if="user" class="w-full bg-[#0A1230] text-white shadow-[0_6px_18px_rgba(0,0,0,0.18)]">
+  <header v-if="user" class="w-full flex-none bg-[#0A1230] text-white shadow-[0_6px_18px_rgba(0,0,0,0.18)]">
     <div class="mx-auto flex w-full max-w-none items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4 lg:px-10">
       <img :src="Logo" alt="Siculingo" class="h-8 w-auto sm:h-10 lg:h-11" />
 

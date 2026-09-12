@@ -3,7 +3,6 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 
 const history = ref([])
 const expandedQuiz = ref(null)
-const quizCards = ref([])
 
 const QUESTIONS_TOTAL = 24
 const QUESTIONS_REQUIRED = 15
@@ -60,10 +59,15 @@ async function toggleQuiz(index) {
 
   await nextTick()
 
-  quizCards.value[index]?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  })
+  const quizElement = document.getElementById(`quiz-history-${index}`)
+  const historyScroll = quizElement?.closest('.history-scroll')
+
+  if (quizElement && historyScroll) {
+    historyScroll.scrollTo({
+      top: quizElement.offsetTop - historyScroll.offsetTop,
+      behavior: 'smooth',
+    })
+  }
 }
 
 function formatDate(dateValue) {
@@ -211,7 +215,7 @@ onMounted(() => {
         <article
           v-for="(quiz, index) in sortedHistory"
           :key="quiz.id ?? index"
-          ref="quizCards"
+          :id="`quiz-history-${index}`"
           class="mx-6 overflow-hidden rounded-[28px] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
         >
 
