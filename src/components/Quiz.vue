@@ -36,6 +36,7 @@ const isCardFlipped = ref(false)
 const isChangingQuestion = ref(false)
 const explanationDetails = ref(null)
 const answeredQuestions = ref([])
+const touchStart = ref(null)
 
 /*
   Possibili schermate:
@@ -716,6 +717,41 @@ function goNextQuestion() {
   }
 }
 
+function onTouchStart(event) {
+  const touch = event.changedTouches[0]
+
+  touchStart.value = {
+    x: touch.clientX,
+    y: touch.clientY,
+  }
+}
+
+function onTouchEnd(event) {
+  if (!touchStart.value || isAnswering.value) {
+    touchStart.value = null
+    return
+  }
+
+  const touch = event.changedTouches[0]
+  const horizontalDistance = touch.clientX - touchStart.value.x
+  const verticalDistance = touch.clientY - touchStart.value.y
+  const isHorizontalSwipe =
+    Math.abs(horizontalDistance) > 50 &&
+    Math.abs(horizontalDistance) > Math.abs(verticalDistance)
+
+  touchStart.value = null
+
+  if (!isHorizontalSwipe) {
+    return
+  }
+
+  if (horizontalDistance < 0) {
+    goNextQuestion()
+  } else {
+    goPreviousQuestion()
+  }
+}
+
 /* =========================================================
    MODALITÀ CASUALE
    ========================================================= */
@@ -884,10 +920,6 @@ onBeforeUnmount(() => {
 
       <div
         class="quiz-shell relative mx-auto w-full max-w-[1400px]"
-        style="
-          --card-height: 370px;
-          --arrow-gap: 100px;
-        "
       >
 
         <!-- =================================================
@@ -926,7 +958,10 @@ onBeforeUnmount(() => {
              ================================================== -->
 
         <div
-          class="relative mx-auto h-[var(--card-height)] w-[var(--card-width)] max-w-full"
+          class="quiz-card-container relative mx-auto h-[var(--card-height)] w-[var(--card-width)] max-w-full"
+          :class="{ 'showing-back': isCardFlipped }"
+          @touchstart.passive="onTouchStart"
+          @touchend.passive="onTouchEnd"
         >
 
           <div
@@ -1237,9 +1272,13 @@ onBeforeUnmount(() => {
              FRECCIA SINISTRA
              ================================================== -->
 
+        <div
+          class="mx-auto mt-4 hidden w-[var(--card-width)] max-w-full items-center justify-between px-4 sm:pointer-events-none sm:absolute sm:inset-x-0 sm:top-[170px] sm:mt-0 sm:flex sm:h-12 sm:w-auto sm:px-0"
+        >
+
         <button
           type="button"
-          class="absolute left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] top-[170px] z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+          class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
           :disabled="
             questionsIndex === 0 ||
             isAnswering
@@ -1281,7 +1320,7 @@ onBeforeUnmount(() => {
 
         <button
           type="button"
-          class="absolute left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] top-[170px] z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+          class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
           :disabled="
             isAnswering
           "
@@ -1315,6 +1354,8 @@ onBeforeUnmount(() => {
           </svg>
 
         </button>
+
+        </div>
 
       </div>
 
@@ -1372,6 +1413,17 @@ onBeforeUnmount(() => {
 <style scoped>
 .quiz-shell {
   --card-width: min(72vw, 760px);
+  --card-height: 370px;
+  --arrow-gap: 100px;
+}
+
+@media (max-width: 639px) {
+  .quiz-shell {
+    --card-width: min(88vw, 420px);
+    --card-height: 500px;
+    --arrow-gap: -24px;
+  }
+
 }
 
 @media (min-width: 768px) and (max-width: 899px) {

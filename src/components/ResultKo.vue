@@ -20,7 +20,7 @@ const emit = defineEmits(['restart'])
 </script>
 
 <template>
-  <section class="flex min-h-full w-full flex-col items-center bg-red-50 px-4 pt-12 pb-8 sm:px-6 sm:pt-20 sm:pb-5 -translate-y-15">
+  <section class="flex min-h-full w-full flex-col items-center bg-red-50 px-4 pt-12 pb-8 sm:px-6 sm:pt-20 sm:pb-5">
     <!-- 1. Modificata la card principale per non superare lo schermo -->
     <div class="flex w-full max-w-[1095px] max-h-[75vh] flex-col rounded-lg border border-red-300 bg-white p-6 overflow-hidden">
       <h2 class="text-xl font-semibold text-red-900">Quiz non superato</h2>

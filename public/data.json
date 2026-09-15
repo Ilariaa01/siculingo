@@ -976,7 +976,12 @@
           "text": "Aglio",
           "correct": false
         }
-      ]
+      ],
+      "explanation": {
+        "correctSubtitle": "Cipolla",
+        "usageExample": "A cipudda fa cianciri l'uocci",
+        "usageExplanation": "La cipolla fa lacrimare gli occhi."
+      }
     }
   },
   {
@@ -1278,30 +1283,6 @@
         },
         {
           "text": "Fermare",
-          "correct": false
-        }
-      ]
-    }
-  },
-  {
-    "question": {
-      "value": "Ammatula",
-      "text": "Cosa significa la parola Ammatula?",
-      "answers": [
-        {
-          "text": "Inutilmente",
-          "correct": true
-        },
-        {
-          "text": "Velocemente",
-          "correct": false
-        },
-        {
-          "text": "Pian piano",
-          "correct": false
-        },
-        {
-          "text": "Di nascosto",
           "correct": false
         }
       ]
