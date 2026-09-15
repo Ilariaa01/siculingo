@@ -1246,7 +1246,7 @@ onBeforeUnmount(() => {
 
           <button
             type="button"
-            class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-10 py-4 text-lg font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95"
+            class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-9 py-2.5 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
             @click="
               answerRandomly
             "
@@ -1258,7 +1258,7 @@ onBeforeUnmount(() => {
 
           <button
             type="button"
-            class="rounded-full border-2 border-[#171E32] bg-white px-10 py-4 text-lg font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95"
+            class="rounded-full border-2 border-[#171E32] bg-white px-9 py-2.5 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
             @click="
               openHistory
             "
@@ -1420,7 +1420,7 @@ onBeforeUnmount(() => {
 @media (max-width: 639px) {
   .quiz-shell {
     --card-width: min(74vw, 320px);
-    --card-height: 400px;
+    --card-height: 410px;
     --arrow-gap: -24px;
   }
 

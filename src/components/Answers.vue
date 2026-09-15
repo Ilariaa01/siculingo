@@ -85,7 +85,7 @@ function answerFeedbackClass(answerIndex, answer) {
 </script>
 
 <template>
-  <section class="mx-auto w-[82%] sm:w-full">
+  <section class="mx-auto w-[91%] sm:w-full">
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
 
       <button
