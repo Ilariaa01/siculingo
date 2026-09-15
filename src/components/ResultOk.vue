@@ -21,8 +21,8 @@ const emit = defineEmits(['restart'])
 
 <template>
   <!-- Aumenta il padding superiore del background da py-8 a pt-16 pb-8 -->
-<section class="flex min-h-full w-full flex-col items-center bg-green-50 px-4 pt-12 pb-8 sm:px-6 sm:pt-20 sm:pb-5">
-    <div class="flex w-full max-w-[1095px] max-h-[75vh] flex-col rounded-lg border border-green-300 bg-white p-6 overflow-hidden">
+<section class="mx-auto flex min-h-full w-full flex-col items-center justify-center bg-green-50 px-4 py-8 sm:px-10 sm:py-10">
+    <div class="mx-auto flex w-full max-w-[1095px] max-h-[75vh] flex-col overflow-hidden rounded-lg border border-green-300 bg-white p-6 max-sm:h-[410px] max-sm:w-[74vw] max-sm:max-w-[320px] max-sm:rounded-[10px] max-sm:p-3">
 
       <h2 class="text-xl font-semibold text-green-900">
         Complimenti, hai superato il quiz!
@@ -34,7 +34,7 @@ const emit = defineEmits(['restart'])
         Obiettivo minimo richiesto: almeno {{ props.questionsOkRequired }}.
       </p>
 
-      <div class="mt-4 flex-1 min-h-0 overflow-y-auto pr-2">
+      <div class="mt-6 flex-1 min-h-0 overflow-y-auto pr-2 sm:mt-4">
         <Results
           :questions-ok="props.questionsOk"
           :questions-ko="props.questionsKo"

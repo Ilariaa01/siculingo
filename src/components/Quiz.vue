@@ -1239,14 +1239,14 @@ onBeforeUnmount(() => {
              ================================================== -->
 
         <div
-          class="mt-16 flex justify-center gap-4"
+          class="mt-11 flex justify-center gap-4 sm:mt-16"
         >
 
           <!-- CASUALE -->
 
           <button
             type="button"
-            class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-9 py-2.5 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
+            class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
             @click="
               answerRandomly
             "
@@ -1258,7 +1258,7 @@ onBeforeUnmount(() => {
 
           <button
             type="button"
-            class="rounded-full border-2 border-[#171E32] bg-white px-9 py-2.5 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
+            class="rounded-full border-2 border-[#171E32] bg-white px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
             @click="
               openHistory
             "

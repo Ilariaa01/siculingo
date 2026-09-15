@@ -162,18 +162,18 @@ onMounted(() => {
   <section
     class="history-page flex min-h-full w-full flex-col items-center bg-[#F7F8FC] px-4 py-8 sm:px-6 sm:py-10"
   >
-    <div class="history-content flex h-auto max-h-[75vh] min-h-0 w-full max-w-[1095px] flex-col overflow-hidden rounded-lg bg-white p-6 shadow-[0_18px_40px_rgba(0,0,0,0.12)]">
+    <div class="history-content flex h-[410px] w-[74vw] max-w-[320px] min-h-0 flex-col overflow-hidden rounded-[10px] bg-white p-3 shadow-[0_18px_40px_rgba(0,0,0,0.12)] sm:h-auto sm:max-h-[75vh] sm:w-full sm:max-w-[1095px] sm:rounded-lg sm:p-6">
 
       <!-- TITOLO E AZIONI -->
       <div class="mb-6 flex flex-none flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1
-            class="text-[2.7rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
+            class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
           >
             Storico
           </h1>
 
-          <p class="mt-3 text-lg text-[#1E2435]">
+          <p class="mt-2 text-sm text-[#1E2435] sm:mt-3 sm:text-lg">
             Qui puoi consultare i risultati dei quiz completati.
           </p>
         </div>
@@ -189,7 +189,7 @@ onMounted(() => {
         </button>
       </div>
 
-      <div class="history-scroll min-h-0 max-h-[350px] space-y-4 overflow-y-auto pr-1">
+      <div class="history-scroll min-h-0 max-h-[250px] space-y-3 overflow-y-auto pr-1 sm:max-h-[350px] sm:space-y-4">
 
         <!-- NESSUN QUIZ -->
         <div
@@ -216,7 +216,7 @@ onMounted(() => {
           v-for="(quiz, index) in sortedHistory"
           :key="quiz.id ?? index"
           :id="`quiz-history-${index}`"
-          class="mx-6 overflow-hidden rounded-[28px] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
+          class="mx-2 overflow-hidden rounded-[10px] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.12)] sm:mx-6 sm:rounded-[28px]"
         >
 
           <!-- SCHEDA PRINCIPALE -->

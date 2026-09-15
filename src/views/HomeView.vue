@@ -70,7 +70,7 @@ onMounted(() => {
 
       <div v-else class="quiz-page relative min-h-dvh w-full overflow-x-hidden overflow-y-auto bg-[#0A1230]" :style="quizPageStyle">
         <div class="relative z-10 mx-auto flex min-h-dvh w-full max-w-7xl flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-6">
-          <div class="flex flex-1 items-center justify-center py-4 sm:py-6">
+          <div class="flex flex-1 items-center justify-center py-4 sm:-translate-y-[3rem] sm:py-6">
             <Quiz />
           </div>
         </div>
