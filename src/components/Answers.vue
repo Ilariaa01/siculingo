@@ -85,8 +85,8 @@ function answerFeedbackClass(answerIndex, answer) {
 </script>
 
 <template>
-  <section class="w-full">
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+  <section class="mx-auto w-[82%] sm:w-full">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
 
       <button
         v-for="(answer, answerIndex) in props.question.answers"
@@ -95,15 +95,15 @@ function answerFeedbackClass(answerIndex, answer) {
         :disabled="props.disabled"
         class="
           flex
-          min-h-[84px]
+          min-h-[64px]
           items-center
           justify-center
-          rounded-[22px]
+          rounded-[18px]
           border
           px-3
-          py-3
+          py-2
           text-center
-          text-[18px]
+          text-[16px]
           font-bold
           leading-snug
           shadow-sm
@@ -111,6 +111,9 @@ function answerFeedbackClass(answerIndex, answer) {
           duration-200
           ease-out
           sm:min-h-[100px]
+          sm:rounded-[22px]
+          sm:py-3
+          sm:text-[18px]
           sm:px-4
         "
         :class="[

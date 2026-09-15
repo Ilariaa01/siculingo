@@ -984,11 +984,11 @@ onBeforeUnmount(() => {
                    ================================================== -->
 
               <div
-                class="quiz-flip-face quiz-flip-front rounded-[32px] bg-white px-4 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:px-8 sm:py-7"
+                class="quiz-flip-face quiz-flip-front flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
               >
 
                 <div
-                  class="mb-4 sm:mb-5"
+                  class="mb-2 sm:mb-5"
                 >
 
                   <div
@@ -998,7 +998,7 @@ onBeforeUnmount(() => {
                     <!-- PAROLA -->
 
                     <h2
-                      class="text-[2.7rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
+                      class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
                     >
                       {{
                         currentQuestion?.value ||
@@ -1007,7 +1007,7 @@ onBeforeUnmount(() => {
                     </h2>
 
                     <p
-                      class="mt-4 text-xl font-semibold text-[#1E2435] sm:text-2xl"
+                      class="mt-2 text-lg font-semibold text-[#1E2435] sm:mt-4 sm:text-2xl"
                     >
                       Cosa significa
                     </p>
@@ -1043,7 +1043,7 @@ onBeforeUnmount(() => {
                    ================================================== -->
 
               <div
-                class="quiz-flip-face quiz-flip-back flex flex-col items-center justify-center rounded-[32px] bg-white px-4 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:px-8 sm:py-7"
+                class="quiz-flip-face quiz-flip-back flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
               >
 
                 <!-- PAROLA -->
@@ -1053,7 +1053,7 @@ onBeforeUnmount(() => {
                 >
 
                   <h2
-                    class="text-[2.7rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
+                      class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
                   >
                     {{
                       currentQuestion?.value ||
@@ -1128,21 +1128,21 @@ onBeforeUnmount(() => {
                      ================================================== -->
 
                 <div
-                  class="mt-4 w-full"
+                  class="mt-3 w-full sm:mt-4"
                 >
 
                   <article
-                    class="rounded-[22px] bg-[#EAC656] px-5 py-4 text-[#171E32]"
+                    class="mx-auto w-[87%] rounded-[18px] bg-[#EAC656] px-3 py-3 text-[#171E32] sm:w-full sm:rounded-[22px] sm:px-5 sm:py-4"
                   >
 
                     <h3
-                      class="text-center text-[1.7rem] font-bold italic text-[#171E32]"
+                      class="text-center text-[1.3rem] font-bold italic text-[#171E32] sm:text-[1.7rem]"
                     >
                       Come si usa?
                     </h3>
 
                     <p
-                      class="mt-3 text-center text-[1.95rem] font-bold leading-tight text-[#AB2E33]"
+                      class="mt-2 text-center text-[1.45rem] font-bold leading-tight text-[#AB2E33] sm:mt-3 sm:text-[1.95rem]"
                     >
                       {{
                         explanationDetails?.usageExample ||
@@ -1151,7 +1151,7 @@ onBeforeUnmount(() => {
                     </p>
 
                     <p
-                      class="mt-3 text-center text-[1.35rem] leading-snug text-[#171E32]"
+                      class="mt-2 text-center text-[1.05rem] leading-snug text-[#171E32] sm:mt-3 sm:text-[1.35rem]"
                     >
                       ({{
                         explanationDetails?.usageExplanation ||
@@ -1419,8 +1419,8 @@ onBeforeUnmount(() => {
 
 @media (max-width: 639px) {
   .quiz-shell {
-    --card-width: min(88vw, 420px);
-    --card-height: 500px;
+    --card-width: min(74vw, 320px);
+    --card-height: 400px;
     --arrow-gap: -24px;
   }
 
