@@ -1,12 +1,5 @@
 <script setup>
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import Answers from "./Answers.vue";
 import ResultKo from "./ResultKo.vue";
@@ -71,9 +64,7 @@ const currentQuestion = computed(() => {
 });
 
 const isFinished = computed(() => {
-  return (
-    questions.value.length > 0 && questionsIndex.value >= questions.value.length
-  );
+  return questions.value.length > 0 && questionsIndex.value >= questions.value.length;
 });
 
 const totalQuestions = computed(() => {
@@ -161,20 +152,14 @@ function normalizeToArray(value) {
    SPIEGAZIONE
    ========================================================= */
 
-function buildExplanationDetails(
-  question,
-  selectedAnswer,
-  correctAnswer,
-  isCorrect,
-) {
+function buildExplanationDetails(question, selectedAnswer, correctAnswer, isCorrect) {
   const explanation = question?.explanation ?? {};
 
   const fallbackMeaning = correctAnswer?.text ?? "";
 
   const meanings = normalizeToArray(explanation.meanings ?? fallbackMeaning);
 
-  const usageExample =
-    explanation.usageExample ?? `${question.value}: ${fallbackMeaning}.`;
+  const usageExample = explanation.usageExample ?? `${question.value}: ${fallbackMeaning}.`;
 
   const usageExplanation =
     explanation.usageExplanation ??
@@ -253,8 +238,7 @@ function restoreQuestionState() {
 
   const selectedAnswer = currentQuestion.value.answers[savedAnswer.answerIndex];
 
-  const correctAnswer =
-    currentQuestion.value.answers.find((item) => item.correct) ?? null;
+  const correctAnswer = currentQuestion.value.answers.find((item) => item.correct) ?? null;
 
   answerFeedback.value = {
     index: savedAnswer.answerIndex,
@@ -336,10 +320,7 @@ async function loadQuestions() {
       dal file data.json.
     */
 
-    const selectedQuestions = shuffleQuestions(payload).slice(
-      0,
-      TOTAL_QUESTIONS,
-    );
+    const selectedQuestions = shuffleQuestions(payload).slice(0, TOTAL_QUESTIONS);
 
     questions.value = selectedQuestions.map((item) => ({
       ...item,
@@ -364,8 +345,7 @@ async function loadQuestions() {
 function cloneQuestionWithSelection(question, answerIndex) {
   const selectedAnswer = question.answers[answerIndex] ?? null;
 
-  const correctAnswer =
-    question.answers.find((answer) => answer.correct) ?? null;
+  const correctAnswer = question.answers.find((answer) => answer.correct) ?? null;
 
   return {
     ...question,
@@ -409,15 +389,11 @@ function onAnswerSelected({ answer, answerIndex }) {
 
   clearFeedbackTimer();
 
-  const questionToStore = cloneQuestionWithSelection(
-    currentQuestion.value,
-    answerIndex,
-  );
+  const questionToStore = cloneQuestionWithSelection(currentQuestion.value, answerIndex);
 
   const selectedAnswer = currentQuestion.value.answers?.[answerIndex];
 
-  const correctAnswer =
-    currentQuestion.value.answers?.find((item) => item.correct) ?? null;
+  const correctAnswer = currentQuestion.value.answers?.find((item) => item.correct) ?? null;
 
   if (!selectedAnswer) {
     return;
@@ -606,8 +582,7 @@ function onTouchEnd(event) {
   const horizontalDistance = touch.clientX - touchStart.value.x;
   const verticalDistance = touch.clientY - touchStart.value.y;
   const isHorizontalSwipe =
-    Math.abs(horizontalDistance) > 50 &&
-    Math.abs(horizontalDistance) > Math.abs(verticalDistance);
+    Math.abs(horizontalDistance) > 50 && Math.abs(horizontalDistance) > Math.abs(verticalDistance);
 
   touchStart.value = null;
 
@@ -750,10 +725,7 @@ onBeforeUnmount(() => {
          QUIZ
          ================================================== -->
 
-    <div
-      v-else-if="!isFinished && currentView === 'quiz'"
-      class="w-full min-w-0"
-    >
+    <div v-else-if="!isFinished && currentView === 'quiz'" class="w-full min-w-0">
       <div class="quiz-shell relative mx-auto w-full max-w-[1400px]">
         <!-- =================================================
              BARRA DI AVANZAMENTO
@@ -788,9 +760,7 @@ onBeforeUnmount(() => {
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
-          <div
-            class="quiz-flip-scene absolute left-1/2 top-0 h-full w-full -translate-x-1/2"
-          >
+          <div class="quiz-flip-scene absolute left-1/2 top-0 h-full w-full -translate-x-1/2">
             <div
               class="quiz-flip-card"
               :key="questionsIndex"
@@ -816,9 +786,7 @@ onBeforeUnmount(() => {
                       {{ currentQuestion?.value || `Domanda ${currentStep}` }}
                     </h2>
 
-                    <p
-                      class="mt-2 text-lg font-semibold text-[#1E2435] sm:mt-4 sm:text-2xl"
-                    >
+                    <p class="mt-2 text-lg font-semibold text-[#1E2435] sm:mt-4 sm:text-2xl">
                       Cosa significa
                     </p>
                   </div>
@@ -884,9 +852,7 @@ onBeforeUnmount(() => {
                     {{ explanationDetails.selectedAnswer }}
                   </div>
 
-                  <div
-                    class="rounded-full bg-[#0B8742] px-4 py-2 text-sm font-semibold text-white"
-                  >
+                  <div class="rounded-full bg-[#0B8742] px-4 py-2 text-sm font-semibold text-white">
                     Corretta:
                     {{ explanationDetails.correctAnswer }}
                   </div>
@@ -927,11 +893,7 @@ onBeforeUnmount(() => {
                 <div
                   v-if="explanationStatusLabel"
                   class="pointer-events-none absolute -bottom-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full text-white shadow-[0_10px_28px_rgba(0,0,0,0.24)]"
-                  :class="
-                    explanationStatusIcon === 'check'
-                      ? 'bg-[#0B8742]'
-                      : 'bg-[#B93333]'
-                  "
+                  :class="explanationStatusIcon === 'check' ? 'bg-[#0B8742]' : 'bg-[#B93333]'"
                 >
                   <!-- CHECK -->
 
@@ -954,13 +916,7 @@ onBeforeUnmount(() => {
 
                   <!-- X -->
 
-                  <svg
-                    v-else
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    aria-hidden="true"
-                  >
+                  <svg v-else viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
                     <path
                       d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5"
                       fill="none"
@@ -1000,10 +956,8 @@ onBeforeUnmount(() => {
             Storico
           </button>
         </div>
-
-        <!-- =================================================
+        
              FRECCIA SINISTRA
-             ================================================== -->
 
         <div
           class="mx-auto mt-4 hidden w-[var(--card-width)] max-w-full items-center justify-between px-4 sm:pointer-events-none sm:absolute sm:inset-x-0 sm:top-[170px] sm:mt-0 sm:flex sm:h-12 sm:w-auto sm:px-0"
