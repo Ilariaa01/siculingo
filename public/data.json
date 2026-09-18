@@ -52,7 +52,7 @@
       "explanation": {
         "correctSubtitle": "Comò",
         "usageExample": "Sarva i robbi intra u cantaranu.",
-        "usageExplanation": "Concerva i vestiti dentro il comò."
+        "usageExplanation": "Conserva i vestiti dentro il comò."
       }
     }
   },
@@ -1015,30 +1015,6 @@
   },
   {
     "question": {
-      "value": "Ciovu",
-      "text": "Cosa significa la parola Ciovu?",
-      "answers": [
-        {
-          "text": "Chiodo",
-          "correct": true
-        },
-        {
-          "text": "Vite",
-          "correct": false
-        },
-        {
-          "text": "Martello",
-          "correct": false
-        },
-        {
-          "text": "Sega",
-          "correct": false
-        }
-      ]
-    }
-  },
-  {
-    "question": {
       "value": "Scaccia",
       "text": "Cosa significa la parola Scaccia?",
       "answers": [
@@ -1155,30 +1131,6 @@
   },
   {
     "question": {
-      "value": "Scanzari",
-      "text": "Cosa significa il verbo Scanzari?",
-      "answers": [
-        {
-          "text": "Evitare",
-          "correct": true
-        },
-        {
-          "text": "Cercare",
-          "correct": false
-        },
-        {
-          "text": "Mangiare",
-          "correct": false
-        },
-        {
-          "text": "Parlare",
-          "correct": false
-        }
-      ]
-    }
-  },
-  {
-    "question": {
       "value": "Sciarriari",
       "text": "Cosa significa il verbo Sciarriari?",
       "answers": [
@@ -1262,30 +1214,6 @@
         "usageExample": "A mpanatigghia è na luccumia Murucana.",
         "usageExplanation": "La mpanatigghia è un dolce tipico di Modica."
       }
-    }
-  },
-  {
-    "question": {
-      "value": "Arruspigghiari",
-      "text": "Cosa significa il verbo Arruspigghiari?",
-      "answers": [
-        {
-          "text": "Svegliare",
-          "correct": true
-        },
-        {
-          "text": "Addormentare",
-          "correct": false
-        },
-        {
-          "text": "Nascondere",
-          "correct": false
-        },
-        {
-          "text": "Fermare",
-          "correct": false
-        }
-      ]
     }
   }
 ]
