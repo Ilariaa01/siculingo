@@ -1,31 +1,43 @@
-import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
-import { getAuth, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDGcrT0zxJi7UPo-SCBtLzVecGVuvoI55o',
-  authDomain: 'repository-exam.firebaseapp.com',
-  projectId: 'repository-exam',
-  storageBucket: 'repository-exam.firebasestorage.app',
-  messagingSenderId: '669274918499',
-  appId: '1:669274918499:web:4fa80cefe64ff5ba7bb256',
-  measurementId: 'G-JK4Z1ZM70J',
-}
+  apiKey: "AIzaSyDGcrT0zxJi7UPo-SCBtLzVecGVuvoI55o",
+  authDomain: "repository-exam.firebaseapp.com",
+  projectId: "repository-exam",
+  storageBucket: "repository-exam.firebasestorage.app",
+  messagingSenderId: "669274918499",
+  appId: "1:669274918499:web:4fa80cefe64ff5ba7bb256",
+  measurementId: "G-JK4Z1ZM70J",
+};
 
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app)
-export const db = getFirestore(app)
-export const googleProvider = new GoogleAuthProvider()
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const googleProvider = new GoogleAuthProvider();
 
 /** Analytics requires a browser environment. */
 export const analytics =
-  typeof window !== 'undefined' ? getAnalytics(app) : null
+  typeof window !== "undefined" ? getAnalytics(app) : null;
 
-const ACCOUNTS = 'accounts'
+const ACCOUNTS = "accounts";
+const QUIZZES = "quizzes";
 
-const LOG = '[accounts]'
+const LOG = "[accounts]";
 
 /**
  * Crea `accounts/{uid}` se mancante, altrimenti allinea sempre name ed email al profilo Auth.
@@ -33,34 +45,34 @@ const LOG = '[accounts]'
  */
 export async function ensureUserAccount(user) {
   if (!user?.uid) {
-    console.warn(`${LOG} ensureUserAccount skipped: missing user.uid`)
-    return false
+    console.warn(`${LOG} ensureUserAccount skipped: missing user.uid`);
+    return false;
   }
-  const path = `${ACCOUNTS}/${user.uid}`
-  const ref = doc(db, ACCOUNTS, user.uid)
-  const name = user.displayName ?? ''
-  const email = user.email ?? ''
+  const path = `${ACCOUNTS}/${user.uid}`;
+  const ref = doc(db, ACCOUNTS, user.uid);
+  const name = user.displayName ?? "";
+  const email = user.email ?? "";
 
   try {
     // Allinea il token Auth a Firestore (evita permission-denied appena dopo il login)
-    await user.getIdToken()
+    await user.getIdToken();
 
-    const snap = await getDoc(ref)
+    const snap = await getDoc(ref);
     if (snap.exists()) {
-      const prev = snap.data()
-      const prevName = prev?.name ?? ''
-      const prevEmail = prev?.email ?? ''
+      const prev = snap.data();
+      const prevName = prev?.name ?? "";
+      const prevEmail = prev?.email ?? "";
       if (prevName === name && prevEmail === email) {
-        console.info(`${LOG} name/email already in sync`, { path })
-        return true
+        console.info(`${LOG} name/email already in sync`, { path });
+        return true;
       }
-      await updateDoc(ref, { name, email })
+      await updateDoc(ref, { name, email });
       console.info(`${LOG} name/email updated`, {
         path,
         name,
         email,
-      })
-      return true
+      });
+      return true;
     }
 
     const accountData = {
@@ -68,29 +80,29 @@ export async function ensureUserAccount(user) {
       roles: [],
       name,
       email,
-    }
-    await setDoc(ref, accountData)
+    };
+    await setDoc(ref, accountData);
     console.info(`${LOG} document created`, {
       path,
       data: accountData,
-    })
-    return true
+    });
+    return true;
   } catch (err) {
-    const code = err?.code ?? err?.name
-    const message = err?.message ?? String(err)
+    const code = err?.code ?? err?.name;
+    const message = err?.message ?? String(err);
     console.error(`${LOG} ensureUserAccount failed`, {
       path,
       code,
       message,
       hint:
-        code === 'permission-denied'
-          ? 'Firestore rules: pubblica firestore.rules; create (uid, roles, name, email) o update name/email come proprietario.'
-          : code === 'unavailable'
-            ? 'Network / Firestore API. Check connection and that Firestore is enabled for the project.'
+        code === "permission-denied"
+          ? "Firestore rules: pubblica firestore.rules; create (uid, roles, name, email) o update name/email come proprietario."
+          : code === "unavailable"
+            ? "Network / Firestore API. Check connection and that Firestore is enabled for the project."
             : undefined,
       err,
-    })
-    return false
+    });
+    return false;
   }
 }
 
@@ -99,9 +111,39 @@ export async function ensureUserAccount(user) {
  * @returns {Promise<object | null>} `{ id, ...fields }` o null se assente
  */
 export async function getAccountByUid(uid) {
-  if (!uid) return null
-  const ref = doc(db, ACCOUNTS, uid)
-  const snap = await getDoc(ref)
-  if (!snap.exists()) return null
-  return { id: snap.id, ...snap.data() }
+  if (!uid) return null;
+  const ref = doc(db, ACCOUNTS, uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() };
+}
+
+export async function saveQuizResult(user, quizResult) {
+  if (!user?.uid) {
+    throw new Error("Cannot save quiz history without an authenticated user");
+  }
+
+  const quizRef = await addDoc(collection(db, QUIZZES), {
+    ...quizResult,
+    uid: user.uid,
+  });
+
+  return quizRef.id;
+}
+
+export async function getQuizHistory(user) {
+  if (!user?.uid) {
+    return [];
+  }
+
+  const quizzesQuery = query(
+    collection(db, QUIZZES),
+    where("uid", "==", user.uid),
+  );
+  const snapshot = await getDocs(quizzesQuery);
+
+  return snapshot.docs.map((quizDoc) => ({
+    id: quizDoc.id,
+    ...quizDoc.data(),
+  }));
 }

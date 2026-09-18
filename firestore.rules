@@ -38,19 +38,6 @@ service cloud.firestore {
         request.resource.data.uid == resource.data.uid;
     }
 
-    function ownsItem() {
-      return signedIn() &&
-        resource != null &&
-        resource.data.keys().hasAny(['uid']) &&
-        resource.data.uid == request.auth.uid;
-    }
-
-    function createsOwnItem() {
-      return signedIn() &&
-        request.resource.data.keys().hasAny(['uid']) &&
-        request.resource.data.uid == request.auth.uid;
-    }
-
     match /accounts/{accountId} {
       // Due regole separate (OR): la prima non usa resource → ok su documento assente (getDoc prima del setDoc).
       allow read: if signedIn() && request.auth.uid == accountId;
@@ -80,16 +67,9 @@ service cloud.firestore {
       allow delete: if ownsAccount() || isAdmin();
     }
 
-    match /items/{itemId} {
-      // Everyone can read items
-      allow read: if true;
-
-      // Only logged-in users with matching uid can create or update their own items
-      allow create: if createsOwnItem();
-      allow update: if ownsItem();
-
-      // Admins can modify or delete any item
-      allow update, delete: if isAdmin();
+    match /quizzes/{quizId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
     }
   }
 }
