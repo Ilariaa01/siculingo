@@ -6,54 +6,57 @@ import {
   onMounted,
   ref,
   watch,
-} from 'vue'
+} from "vue";
 
-import Answers from './Answers.vue'
-import ResultKo from './ResultKo.vue'
-import ResultOk from './ResultOk.vue'
-import QuizHistory from './QuizHistory.vue'
+import Answers from "./Answers.vue";
+import ResultKo from "./ResultKo.vue";
+import ResultOk from "./ResultOk.vue";
+import QuizHistory from "./QuizHistory.vue";
 
-import { useGlobal } from '../composables/global'
+import { useGlobal } from "../composables/global";
+import { auth, saveQuizResult } from "../firebase.js";
 
-const global = useGlobal()
+const global = useGlobal();
 
 /* =========================================================
    STATO DEL QUIZ
    ========================================================= */
 
-const questions = ref([])
-const questionsOk = ref([])
-const questionsKo = ref([])
-const questionsIndex = ref(0)
+const questions = ref([]);
+const questionsOk = ref([]);
+const questionsKo = ref([]);
+const questionsIndex = ref(0);
 
-const questionsOkRequired = 10
-const TOTAL_QUESTIONS = 24
+const questionsOkRequired = 10;
+const TOTAL_QUESTIONS = 24;
 
-const fetchError = ref('')
-const answerFeedback = ref(null)
-const isAnswering = ref(false)
-const isCardFlipped = ref(false)
-const isChangingQuestion = ref(false)
-const explanationDetails = ref(null)
-const answeredQuestions = ref([])
-const touchStart = ref(null)
+const fetchError = ref("");
+const answerFeedback = ref(null);
+const isAnswering = ref(false);
+const isCardFlipped = ref(false);
+const isChangingQuestion = ref(false);
+const explanationDetails = ref(null);
+const answeredQuestions = ref([]);
+const touchStart = ref(null);
+const isRightArrowFeedbackActive = ref(false);
 
 /*
   Possibili schermate:
   - quiz
   - history
 */
-const currentView = ref('quiz')
+const currentView = ref("quiz");
 
 /* =========================================================
    ANIMAZIONI
    ========================================================= */
 
-const FEEDBACK_DURATION_MS = 900
-const FLIP_DURATION_MS = 620
+const FEEDBACK_DURATION_MS = 900;
+const FLIP_DURATION_MS = 620;
 
-let feedbackTimerId = null
-let flipTimerId = null
+let feedbackTimerId = null;
+let flipTimerId = null;
+let rightArrowFeedbackTimerId = null;
 
 /* =========================================================
    DOMANDE
@@ -61,56 +64,41 @@ let flipTimerId = null
 
 const currentQuestion = computed(() => {
   if (questionsIndex.value >= questions.value.length) {
-    return null
+    return null;
   }
 
-  return (
-    questions.value[questionsIndex.value]?.question ??
-    null
-  )
-})
+  return questions.value[questionsIndex.value]?.question ?? null;
+});
 
 const isFinished = computed(() => {
   return (
-    questions.value.length > 0 &&
-    questionsIndex.value >= questions.value.length
-  )
-})
+    questions.value.length > 0 && questionsIndex.value >= questions.value.length
+  );
+});
 
 const totalQuestions = computed(() => {
-  return questions.value.length || TOTAL_QUESTIONS
-})
+  return questions.value.length || TOTAL_QUESTIONS;
+});
 
 const currentStep = computed(() => {
   if (questions.value.length === 0) {
-    return 0
+    return 0;
   }
 
-  return Math.min(
-    questionsIndex.value + 1,
-    questions.value.length
-  )
-})
+  return Math.min(questionsIndex.value + 1, questions.value.length);
+});
 
 const progressPercent = computed(() => {
   if (questions.value.length === 0) {
-    return 0
+    return 0;
   }
 
-  return Math.min(
-    (questionsIndex.value /
-      questions.value.length) *
-      100,
-    100
-  )
-})
+  return Math.min((questionsIndex.value / questions.value.length) * 100, 100);
+});
 
 const isQuizPassed = computed(() => {
-  return (
-    questionsOk.value.length >=
-    questionsOkRequired
-  )
-})
+  return questionsOk.value.length >= questionsOkRequired;
+});
 
 /* =========================================================
    TIMER
@@ -118,14 +106,39 @@ const isQuizPassed = computed(() => {
 
 function clearFeedbackTimer() {
   if (feedbackTimerId !== null) {
-    clearTimeout(feedbackTimerId)
-    feedbackTimerId = null
+    clearTimeout(feedbackTimerId);
+    feedbackTimerId = null;
   }
 
   if (flipTimerId !== null) {
-    clearTimeout(flipTimerId)
-    flipTimerId = null
+    clearTimeout(flipTimerId);
+    flipTimerId = null;
   }
+
+  if (rightArrowFeedbackTimerId !== null) {
+    clearTimeout(rightArrowFeedbackTimerId);
+    rightArrowFeedbackTimerId = null;
+  }
+
+  isRightArrowFeedbackActive.value = false;
+}
+
+function triggerRightArrowFeedback() {
+  if (rightArrowFeedbackTimerId !== null) {
+    clearTimeout(rightArrowFeedbackTimerId);
+    rightArrowFeedbackTimerId = null;
+  }
+
+  isRightArrowFeedbackActive.value = false;
+
+  nextTick(() => {
+    isRightArrowFeedbackActive.value = true;
+
+    rightArrowFeedbackTimerId = setTimeout(() => {
+      isRightArrowFeedbackActive.value = false;
+      rightArrowFeedbackTimerId = null;
+    }, 280);
+  });
 }
 
 /* =========================================================
@@ -134,17 +147,14 @@ function clearFeedbackTimer() {
 
 function normalizeToArray(value) {
   if (Array.isArray(value)) {
-    return value.filter(Boolean)
+    return value.filter(Boolean);
   }
 
-  if (
-    typeof value === 'string' &&
-    value.trim()
-  ) {
-    return [value.trim()]
+  if (typeof value === "string" && value.trim()) {
+    return [value.trim()];
   }
 
-  return []
+  return [];
 }
 
 /* =========================================================
@@ -155,54 +165,42 @@ function buildExplanationDetails(
   question,
   selectedAnswer,
   correctAnswer,
-  isCorrect
+  isCorrect,
 ) {
-  const explanation =
-    question?.explanation ?? {}
+  const explanation = question?.explanation ?? {};
 
-  const fallbackMeaning =
-    correctAnswer?.text ?? ''
+  const fallbackMeaning = correctAnswer?.text ?? "";
 
-  const meanings = normalizeToArray(
-    explanation.meanings ??
-      fallbackMeaning
-  )
+  const meanings = normalizeToArray(explanation.meanings ?? fallbackMeaning);
 
   const usageExample =
-    explanation.usageExample ??
-    `${question.value}: ${fallbackMeaning}.`
+    explanation.usageExample ?? `${question.value}: ${fallbackMeaning}.`;
 
   const usageExplanation =
     explanation.usageExplanation ??
-    `In pratica: ${question.value} corrisponde a ${fallbackMeaning.toLowerCase()}.`
+    `In pratica: ${question.value} corrisponde a ${fallbackMeaning.toLowerCase()}.`;
 
   const origin =
     explanation.origin ??
-    `L'origine precisa non e presente nei dati correnti. In questa scheda il termine e associato a "${fallbackMeaning}".`
+    `L'origine precisa non e presente nei dati correnti. In questa scheda il termine e associato a "${fallbackMeaning}".`;
 
   const originExplanation =
     explanation.originExplanation ??
-    `Approfondimento: il termine ${question.value} e usato con questo significato nel lessico quotidiano.`
+    `Approfondimento: il termine ${question.value} e usato con questo significato nel lessico quotidiano.`;
 
   const curiosity =
     explanation.curiosity ??
-    `Curiosita linguistica: ripetere il termine in una frase aiuta a memorizzarne meglio l'uso.`
+    `Curiosita linguistica: ripetere il termine in una frase aiuta a memorizzarne meglio l'uso.`;
 
   return {
     isCorrect,
 
-    selectedAnswer:
-      selectedAnswer?.text ?? '',
+    selectedAnswer: selectedAnswer?.text ?? "",
 
-    correctAnswer:
-      correctAnswer?.text ?? '',
+    correctAnswer: correctAnswer?.text ?? "",
 
     subtitle:
-      (
-        isCorrect
-          ? explanation.correctSubtitle
-          : explanation.wrongSubtitle
-      ) ??
+      (isCorrect ? explanation.correctSubtitle : explanation.wrongSubtitle) ??
       selectedAnswer?.text ??
       fallbackMeaning,
 
@@ -217,7 +215,7 @@ function buildExplanationDetails(
     originExplanation,
 
     curiosity,
-  }
+  };
 }
 
 /* =========================================================
@@ -225,57 +223,53 @@ function buildExplanationDetails(
    ========================================================= */
 
 function resetCardState() {
-  clearFeedbackTimer()
+  clearFeedbackTimer();
 
-  answerFeedback.value = null
-  isAnswering.value = false
-  isCardFlipped.value = false
-  explanationDetails.value = null
+  answerFeedback.value = null;
+  isAnswering.value = false;
+  isCardFlipped.value = false;
+  explanationDetails.value = null;
 }
 
 function rebuildAnswerResults() {
   questionsOk.value = answeredQuestions.value
     .filter((entry) => entry?.correct)
-    .map((entry) => entry.question)
+    .map((entry) => entry.question);
 
   questionsKo.value = answeredQuestions.value
     .filter((entry) => entry && !entry.correct)
-    .map((entry) => entry.question)
+    .map((entry) => entry.question);
 }
 
 function restoreQuestionState() {
-  const savedAnswer =
-    answeredQuestions.value[questionsIndex.value]
+  const savedAnswer = answeredQuestions.value[questionsIndex.value];
 
   if (!savedAnswer || !currentQuestion.value) {
-    resetCardState()
-    return
+    resetCardState();
+    return;
   }
 
-  clearFeedbackTimer()
+  clearFeedbackTimer();
 
-  const selectedAnswer =
-    currentQuestion.value.answers[savedAnswer.answerIndex]
+  const selectedAnswer = currentQuestion.value.answers[savedAnswer.answerIndex];
 
   const correctAnswer =
-    currentQuestion.value.answers.find(
-      (item) => item.correct
-    ) ?? null
+    currentQuestion.value.answers.find((item) => item.correct) ?? null;
 
   answerFeedback.value = {
     index: savedAnswer.answerIndex,
     correct: savedAnswer.correct,
-  }
+  };
 
   explanationDetails.value = buildExplanationDetails(
     currentQuestion.value,
     selectedAnswer,
     correctAnswer,
-    savedAnswer.correct
-  )
+    savedAnswer.correct,
+  );
 
-  isAnswering.value = false
-  isCardFlipped.value = true
+  isAnswering.value = false;
+  isCardFlipped.value = true;
 }
 
 /* =========================================================
@@ -283,65 +277,37 @@ function restoreQuestionState() {
    ========================================================= */
 
 function shuffleAnswers(answers) {
-  const shuffledAnswers = [...answers]
+  const shuffledAnswers = [...answers];
 
-  for (
-    let index =
-      shuffledAnswers.length - 1;
-    index > 0;
-    index -= 1
-  ) {
-    const randomIndex =
-      Math.floor(
-        Math.random() *
-          (index + 1)
-      )
+  for (let index = shuffledAnswers.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
 
-    ;[
-      shuffledAnswers[index],
-      shuffledAnswers[randomIndex],
-    ] = [
+    [shuffledAnswers[index], shuffledAnswers[randomIndex]] = [
       shuffledAnswers[randomIndex],
       shuffledAnswers[index],
-    ]
+    ];
   }
 
-  return shuffledAnswers
+  return shuffledAnswers;
 }
 
 /* =========================================================
    RANDOMIZZAZIONE DOMANDE
    ========================================================= */
 
-function shuffleQuestions(
-  questionsList
-) {
-  const shuffledQuestions = [
-    ...questionsList,
-  ]
+function shuffleQuestions(questionsList) {
+  const shuffledQuestions = [...questionsList];
 
-  for (
-    let index =
-      shuffledQuestions.length - 1;
-    index > 0;
-    index -= 1
-  ) {
-    const randomIndex =
-      Math.floor(
-        Math.random() *
-          (index + 1)
-      )
+  for (let index = shuffledQuestions.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
 
-    ;[
-      shuffledQuestions[index],
-      shuffledQuestions[randomIndex],
-    ] = [
+    [shuffledQuestions[index], shuffledQuestions[randomIndex]] = [
       shuffledQuestions[randomIndex],
       shuffledQuestions[index],
-    ]
+    ];
   }
 
-  return shuffledQuestions
+  return shuffledQuestions;
 }
 
 /* =========================================================
@@ -349,26 +315,20 @@ function shuffleQuestions(
    ========================================================= */
 
 async function loadQuestions() {
-  fetchError.value = ''
-  global.loading += 1
+  fetchError.value = "";
+  global.loading += 1;
 
   try {
-    const response =
-      await fetch('/data.json')
+    const response = await fetch("/data.json");
 
     if (!response.ok) {
-      throw new Error(
-        'Errore durante il caricamento delle domande'
-      )
+      throw new Error("Errore durante il caricamento delle domande");
     }
 
-    const payload =
-      await response.json()
+    const payload = await response.json();
 
     if (!Array.isArray(payload)) {
-      throw new Error(
-        'Il file data.json non contiene un array valido'
-      )
+      throw new Error("Il file data.json non contiene un array valido");
     }
 
     /*
@@ -376,35 +336,24 @@ async function loadQuestions() {
       dal file data.json.
     */
 
-    const selectedQuestions =
-      shuffleQuestions(
-        payload
-      ).slice(
-        0,
-        TOTAL_QUESTIONS
-      )
+    const selectedQuestions = shuffleQuestions(payload).slice(
+      0,
+      TOTAL_QUESTIONS,
+    );
 
-    questions.value =
-      selectedQuestions.map(
-        (item) => ({
-          ...item,
+    questions.value = selectedQuestions.map((item) => ({
+      ...item,
 
-          question: {
-            ...item.question,
+      question: {
+        ...item.question,
 
-            answers:
-              shuffleAnswers(
-                item.question.answers
-              ),
-          },
-        })
-      )
+        answers: shuffleAnswers(item.question.answers),
+      },
+    }));
   } catch (error) {
-    fetchError.value =
-      error?.message ||
-      'Errore sconosciuto'
+    fetchError.value = error?.message || "Errore sconosciuto";
   } finally {
-    global.loading -= 1
+    global.loading -= 1;
   }
 }
 
@@ -412,134 +361,101 @@ async function loadQuestions() {
    SALVATAGGIO DELLA RISPOSTA
    ========================================================= */
 
-function cloneQuestionWithSelection(
-  question,
-  answerIndex
-) {
-  const selectedAnswer =
-    question.answers[
-      answerIndex
-    ] ?? null
+function cloneQuestionWithSelection(question, answerIndex) {
+  const selectedAnswer = question.answers[answerIndex] ?? null;
 
   const correctAnswer =
-    question.answers.find(
-      (answer) =>
-        answer.correct
-    ) ?? null
+    question.answers.find((answer) => answer.correct) ?? null;
 
   return {
     ...question,
 
-    questionIndex:
-      questionsIndex.value,
+    questionIndex: questionsIndex.value,
 
-    selectedAnswer:
-      selectedAnswer
-        ? {
-            ...selectedAnswer,
-            selected: true,
-          }
-        : null,
+    selectedAnswer: selectedAnswer
+      ? {
+          ...selectedAnswer,
+          selected: true,
+        }
+      : null,
 
-    correctAnswer:
-      correctAnswer
-        ? {
-            ...correctAnswer,
-          }
-        : null,
+    correctAnswer: correctAnswer
+      ? {
+          ...correctAnswer,
+        }
+      : null,
 
-    answers:
-      question.answers.map(
-        (answer, index) => ({
-          ...answer,
+    answers: question.answers.map((answer, index) => ({
+      ...answer,
 
-          selected:
-            index ===
-            answerIndex,
-        })
-      ),
-  }
+      selected: index === answerIndex,
+    })),
+  };
 }
 
 /* =========================================================
    RISPOSTA DELL'UTENTE
    ========================================================= */
 
-function onAnswerSelected({
-  answer,
-  answerIndex,
-}) {
+function onAnswerSelected({ answer, answerIndex }) {
   if (
     !currentQuestion.value ||
     isAnswering.value ||
     isCardFlipped.value ||
     answeredQuestions.value[questionsIndex.value]
   ) {
-    return
+    return;
   }
 
-  clearFeedbackTimer()
+  clearFeedbackTimer();
 
-  const questionToStore =
-    cloneQuestionWithSelection(
-      currentQuestion.value,
-      answerIndex
-    )
+  const questionToStore = cloneQuestionWithSelection(
+    currentQuestion.value,
+    answerIndex,
+  );
 
-  const selectedAnswer =
-    currentQuestion.value.answers?.[
-      answerIndex
-    ]
+  const selectedAnswer = currentQuestion.value.answers?.[answerIndex];
 
   const correctAnswer =
-    currentQuestion.value.answers?.find(
-      (item) =>
-        item.correct
-    ) ?? null
+    currentQuestion.value.answers?.find((item) => item.correct) ?? null;
 
   if (!selectedAnswer) {
-    return
+    return;
   }
 
   answeredQuestions.value[questionsIndex.value] = {
     answerIndex,
     correct: selectedAnswer.correct,
     question: questionToStore,
-  }
+  };
 
-  rebuildAnswerResults()
+  rebuildAnswerResults();
 
-  isAnswering.value = true
+  isAnswering.value = true;
 
   answerFeedback.value = {
     index: answerIndex,
-    correct:
-      selectedAnswer.correct,
-  }
+    correct: selectedAnswer.correct,
+  };
 
-  explanationDetails.value =
-    buildExplanationDetails(
-      currentQuestion.value,
-      selectedAnswer,
-      correctAnswer,
-      selectedAnswer.correct
-    )
+  explanationDetails.value = buildExplanationDetails(
+    currentQuestion.value,
+    selectedAnswer,
+    correctAnswer,
+    selectedAnswer.correct,
+  );
 
-  feedbackTimerId =
-    setTimeout(() => {
-      feedbackTimerId = null
+  feedbackTimerId = setTimeout(() => {
+    feedbackTimerId = null;
 
-      isCardFlipped.value =
-        true
+    isCardFlipped.value = true;
 
-      flipTimerId =
-        setTimeout(() => {
-          isAnswering.value =
-            false
+    flipTimerId = setTimeout(() => {
+      isAnswering.value = false;
 
-          flipTimerId = null
-        }, FLIP_DURATION_MS)
-    }, FEEDBACK_DURATION_MS)
+      flipTimerId = null;
+    }, FLIP_DURATION_MS);
+  }, FEEDBACK_DURATION_MS);
 }
 
 /* =========================================================
@@ -549,29 +465,23 @@ function onAnswerSelected({
 watch(
   () => questionsIndex.value,
   () => {
-    restoreQuestionState()
-  }
-)
+    restoreQuestionState();
+  },
+);
 
 /* =========================================================
    STORICO
    ========================================================= */
 
-function saveQuizToHistory() {
-  const correct =
-    questionsOk.value.length
+async function saveQuizToHistory() {
+  const correct = questionsOk.value.length;
 
-  const wrong =
-    questionsKo.value.length
+  const wrong = questionsKo.value.length;
 
-  const total =
-    correct + wrong
+  const total = correct + wrong;
 
   const quizResult = {
-    id: Date.now(),
-
-    date:
-      new Date().toISOString(),
+    date: new Date().toISOString(),
 
     correct,
 
@@ -579,57 +489,20 @@ function saveQuizToHistory() {
 
     total,
 
-    passed:
-      correct >=
-      questionsOkRequired,
+    passed: correct >= questionsOkRequired,
 
-    questionsOk: [
-      ...questionsOk.value,
-    ],
+    questionsOk: [...questionsOk.value],
 
-    questionsKo: [
-      ...questionsKo.value,
-    ],
+    questionsKo: [...questionsKo.value],
 
-    questions: [
-      ...questionsOk.value,
-      ...questionsKo.value,
-    ],
-  }
+    questions: [...questionsOk.value, ...questionsKo.value],
+  };
 
   try {
-    const savedHistory =
-      localStorage.getItem(
-        'quizHistory'
-      )
-
-    const history =
-      savedHistory
-        ? JSON.parse(
-            savedHistory
-          )
-        : []
-
-    history.push(
-      quizResult
-    )
-
-    localStorage.setItem(
-      'quizHistory',
-      JSON.stringify(
-        history
-      )
-    )
-
-    console.log(
-      'Quiz salvato nello storico:',
-      quizResult
-    )
+    const quizId = await saveQuizResult(auth.currentUser, quizResult);
+    console.log("Quiz salvato nello storico:", { id: quizId, ...quizResult });
   } catch (error) {
-    console.error(
-      'Errore nel salvataggio dello storico:',
-      error
-    )
+    console.error("Errore nel salvataggio dello storico:", error);
   }
 }
 
@@ -638,15 +511,13 @@ function saveQuizToHistory() {
    ========================================================= */
 
 function openHistory() {
-  resetCardState()
+  resetCardState();
 
-  currentView.value =
-    'history'
+  currentView.value = "history";
 }
 
 function closeHistory() {
-  currentView.value =
-    'quiz'
+  currentView.value = "quiz";
 }
 
 /* =========================================================
@@ -654,20 +525,19 @@ function closeHistory() {
    ========================================================= */
 
 function restartQuiz() {
-  resetCardState()
+  resetCardState();
 
-  questionsIndex.value = 0
+  questionsIndex.value = 0;
 
-  answeredQuestions.value = []
+  answeredQuestions.value = [];
 
-  questionsOk.value = []
+  questionsOk.value = [];
 
-  questionsKo.value = []
+  questionsKo.value = [];
 
-  currentView.value =
-    'quiz'
+  currentView.value = "quiz";
 
-  loadQuestions()
+  loadQuestions();
 }
 
 /* =========================================================
@@ -675,33 +545,36 @@ function restartQuiz() {
    ========================================================= */
 
 function goPreviousQuestion() {
-  if (
-    questionsIndex.value === 0
-  ) {
-    return
+  if (questionsIndex.value === 0) {
+    return;
   }
 
-  isChangingQuestion.value = true
-  isCardFlipped.value = false
-  questionsIndex.value -= 1
+  isChangingQuestion.value = true;
+  isCardFlipped.value = false;
+  questionsIndex.value -= 1;
 
   nextTick(() => {
-    isChangingQuestion.value = false
-  })
+    isChangingQuestion.value = false;
+  });
 }
 
 function goNextQuestion() {
   if (isFinished.value) {
-    return
+    return;
   }
 
-  isChangingQuestion.value = true
-  isCardFlipped.value = false
-  questionsIndex.value += 1
+  if (!answeredQuestions.value[questionsIndex.value]) {
+    triggerRightArrowFeedback();
+    return;
+  }
+
+  isChangingQuestion.value = true;
+  isCardFlipped.value = false;
+  questionsIndex.value += 1;
 
   nextTick(() => {
-    isChangingQuestion.value = false
-  })
+    isChangingQuestion.value = false;
+  });
 
   /*
     Quando viene superata
@@ -709,46 +582,43 @@ function goNextQuestion() {
     il quiz nello storico.
   */
 
-  if (
-    questionsIndex.value >=
-    questions.value.length
-  ) {
-    saveQuizToHistory()
+  if (questionsIndex.value >= questions.value.length) {
+    saveQuizToHistory();
   }
 }
 
 function onTouchStart(event) {
-  const touch = event.changedTouches[0]
+  const touch = event.changedTouches[0];
 
   touchStart.value = {
     x: touch.clientX,
     y: touch.clientY,
-  }
+  };
 }
 
 function onTouchEnd(event) {
   if (!touchStart.value || isAnswering.value) {
-    touchStart.value = null
-    return
+    touchStart.value = null;
+    return;
   }
 
-  const touch = event.changedTouches[0]
-  const horizontalDistance = touch.clientX - touchStart.value.x
-  const verticalDistance = touch.clientY - touchStart.value.y
+  const touch = event.changedTouches[0];
+  const horizontalDistance = touch.clientX - touchStart.value.x;
+  const verticalDistance = touch.clientY - touchStart.value.y;
   const isHorizontalSwipe =
     Math.abs(horizontalDistance) > 50 &&
-    Math.abs(horizontalDistance) > Math.abs(verticalDistance)
+    Math.abs(horizontalDistance) > Math.abs(verticalDistance);
 
-  touchStart.value = null
+  touchStart.value = null;
 
   if (!isHorizontalSwipe) {
-    return
+    return;
   }
 
   if (horizontalDistance < 0) {
-    goNextQuestion()
+    goNextQuestion();
   } else {
-    goPreviousQuestion()
+    goPreviousQuestion();
   }
 }
 
@@ -758,71 +628,53 @@ function onTouchEnd(event) {
 
 function answerRandomly() {
   if (!questions.value.length) {
-    return
+    return;
   }
 
-  resetCardState()
+  resetCardState();
 
-  answeredQuestions.value = []
+  answeredQuestions.value = [];
 
-  for (
-    const item of questions.value
-  ) {
-    const question =
-      item.question
+  for (const item of questions.value) {
+    const question = item.question;
 
-    const randomIndex =
-      Math.floor(
-        Math.random() *
-          question.answers.length
-      )
+    const randomIndex = Math.floor(Math.random() * question.answers.length);
 
-    const questionToStore =
-      cloneQuestionWithSelection(
-        question,
-        randomIndex
-      )
+    const questionToStore = cloneQuestionWithSelection(question, randomIndex);
 
     answeredQuestions.value.push({
       answerIndex: randomIndex,
       correct: question.answers[randomIndex].correct,
       question: questionToStore,
-    })
+    });
   }
 
-  rebuildAnswerResults()
+  rebuildAnswerResults();
 
-  questionsIndex.value =
-    questions.value.length
+  questionsIndex.value = questions.value.length;
 
-  saveQuizToHistory()
+  saveQuizToHistory();
 }
 
 /* =========================================================
    ICONA FEEDBACK
    ========================================================= */
 
-const explanationStatusLabel =
-  computed(() => {
-    if (!answerFeedback.value) {
-      return ''
-    }
+const explanationStatusLabel = computed(() => {
+  if (!answerFeedback.value) {
+    return "";
+  }
 
-    return answerFeedback.value.correct
-      ? 'Risposta corretta'
-      : 'Risposta errata'
-  })
+  return answerFeedback.value.correct ? "Risposta corretta" : "Risposta errata";
+});
 
-const explanationStatusIcon =
-  computed(() => {
-    if (!answerFeedback.value) {
-      return ''
-    }
+const explanationStatusIcon = computed(() => {
+  if (!answerFeedback.value) {
+    return "";
+  }
 
-    return answerFeedback.value.correct
-      ? 'check'
-      : 'cross'
-  })
+  return answerFeedback.value.correct ? "check" : "cross";
+});
 
 /* =========================================================
    EXPOSE
@@ -833,26 +685,25 @@ defineExpose({
   questionsIndex,
   isFinished,
   answerRandomly,
-})
+});
 
 /* =========================================================
    MOUNT / UNMOUNT
    ========================================================= */
 
 onMounted(() => {
-  loadQuestions()
-})
+  loadQuestions();
+});
 
 onBeforeUnmount(() => {
-  clearFeedbackTimer()
-})
+  clearFeedbackTimer();
+});
 </script>
 
 <template>
   <section
-    class="flex min-h-full w-full flex-1 flex-col items-center justify-center overflow-visible px-4 py-6 sm:px-0"
+    class="flex min-h-0 w-full flex-1 flex-col items-center justify-center overflow-visible px-0 py-6"
   >
-
     <!-- =================================================
          ERRORE
          ================================================== -->
@@ -869,9 +720,7 @@ onBeforeUnmount(() => {
          ================================================== -->
 
     <div
-      v-else-if="
-        questions.length === 0
-      "
+      v-else-if="questions.length === 0"
       class="mx-auto max-w-4xl rounded-[34px] bg-white p-6 text-center text-neutral-600 shadow-[0_18px_40px_rgba(0,0,0,0.22)]"
     >
       Caricamento domande...
@@ -881,20 +730,12 @@ onBeforeUnmount(() => {
          STORICO
          ================================================== -->
 
-    <div
-      v-else-if="
-        currentView === 'history'
-      "
-      class="w-full"
-    >
-
+    <div v-else-if="currentView === 'history'" class="w-full min-w-0">
       <QuizHistory />
 
       <!-- TORNA AL QUIZ -->
 
-      <div
-        class="mt-8 flex justify-center"
-      >
+      <div class="mt-8 flex justify-center">
         <button
           type="button"
           class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-8 py-3 text-lg font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95"
@@ -903,7 +744,6 @@ onBeforeUnmount(() => {
           Torna al quiz
         </button>
       </div>
-
     </div>
 
     <!-- =================================================
@@ -911,17 +751,10 @@ onBeforeUnmount(() => {
          ================================================== -->
 
     <div
-      v-else-if="
-        !isFinished &&
-        currentView === 'quiz'
-      "
-      class="w-full"
+      v-else-if="!isFinished && currentView === 'quiz'"
+      class="w-full min-w-0"
     >
-
-      <div
-        class="quiz-shell relative mx-auto w-full max-w-[1400px]"
-      >
-
+      <div class="quiz-shell relative mx-auto w-full max-w-[1400px]">
         <!-- =================================================
              BARRA DI AVANZAMENTO
              ================================================== -->
@@ -929,28 +762,20 @@ onBeforeUnmount(() => {
         <div
           class="mx-auto mb-4 flex w-[var(--card-width)] max-w-full items-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm sm:px-6"
         >
-
-          <div
-            class="h-3 flex-1 overflow-hidden rounded-full bg-[#D9DCE8]"
-          >
-
+          <div class="h-3 flex-1 overflow-hidden rounded-full bg-[#D9DCE8]">
             <div
               class="h-full rounded-full bg-[#0B1334] transition-all duration-300"
               :style="{
-                width: `${progressPercent}%`
+                width: `${progressPercent}%`,
               }"
             ></div>
-
           </div>
 
-          <span
-            class="text-xs font-semibold text-[#0B1334] sm:text-sm"
-          >
+          <span class="text-xs font-semibold text-[#0B1334] sm:text-sm">
             {{ currentStep }}
             su
             {{ totalQuestions }}
           </span>
-
         </div>
 
         <!-- =================================================
@@ -963,22 +788,17 @@ onBeforeUnmount(() => {
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
-
           <div
             class="quiz-flip-scene absolute left-1/2 top-0 h-full w-full -translate-x-1/2"
           >
-
             <div
               class="quiz-flip-card"
               :key="questionsIndex"
               :class="{
-                'is-flipped':
-                  isCardFlipped,
-                'no-flip-transition':
-                  isChangingQuestion
+                'is-flipped': isCardFlipped,
+                'no-flip-transition': isChangingQuestion,
               }"
             >
-
               <!-- =================================================
                    FRONTE
                    ================================================== -->
@@ -986,24 +806,14 @@ onBeforeUnmount(() => {
               <div
                 class="quiz-flip-face quiz-flip-front flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
               >
-
-                <div
-                  class="mb-2 sm:mb-5"
-                >
-
-                  <div
-                    class="w-full text-center"
-                  >
-
+                <div class="mb-2 sm:mb-5">
+                  <div class="w-full text-center">
                     <!-- PAROLA -->
 
                     <h2
                       class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
                     >
-                      {{
-                        currentQuestion?.value ||
-                        `Domanda ${currentStep}`
-                      }}
+                      {{ currentQuestion?.value || `Domanda ${currentStep}` }}
                     </h2>
 
                     <p
@@ -1011,31 +821,18 @@ onBeforeUnmount(() => {
                     >
                       Cosa significa
                     </p>
-
                   </div>
-
                 </div>
 
                 <!-- RISPOSTE -->
 
                 <Answers
-                  v-if="
-                    currentQuestion
-                  "
-                  :question="
-                    currentQuestion
-                  "
-                  :feedback="
-                    answerFeedback
-                  "
-                  :disabled="
-                    isAnswering
-                  "
-                  @select="
-                    onAnswerSelected
-                  "
+                  v-if="currentQuestion"
+                  :question="currentQuestion"
+                  :feedback="answerFeedback"
+                  :disabled="isAnswering"
+                  @select="onAnswerSelected"
                 />
-
               </div>
 
               <!-- =================================================
@@ -1045,22 +842,14 @@ onBeforeUnmount(() => {
               <div
                 class="quiz-flip-face quiz-flip-back flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
               >
-
                 <!-- PAROLA -->
 
-                <div
-                  class="w-full text-center"
-                >
-
+                <div class="w-full text-center">
                   <h2
-                      class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
+                    class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
                   >
-                    {{
-                      currentQuestion?.value ||
-                      `Domanda ${currentStep}`
-                    }}
+                    {{ currentQuestion?.value || `Domanda ${currentStep}` }}
                   </h2>
-
                 </div>
 
                 <!-- =================================================
@@ -1068,27 +857,16 @@ onBeforeUnmount(() => {
                      ================================================== -->
 
                 <div
-                  v-if="
-                    answerFeedback?.correct &&
-                    explanationDetails
-                  "
+                  v-if="answerFeedback?.correct && explanationDetails"
                   class="mt-4 flex min-h-[44px] items-center justify-between gap-3 rounded-full bg-[#0B8742] px-5 text-white"
                 >
-
-                  <span
-                    class="text-sm font-semibold italic sm:text-[1.05rem]"
-                  >
+                  <span class="text-sm font-semibold italic sm:text-[1.05rem]">
                     Risposta corretta
                   </span>
 
-                  <span
-                    class="text-sm sm:text-[1.05rem]"
-                  >
-                    {{
-                      explanationDetails.correctAnswer
-                    }}
+                  <span class="text-sm sm:text-[1.05rem]">
+                    {{ explanationDetails.correctAnswer }}
                   </span>
-
                 </div>
 
                 <!-- =================================================
@@ -1096,45 +874,32 @@ onBeforeUnmount(() => {
                      ================================================== -->
 
                 <div
-                  v-else-if="
-                    !answerFeedback?.correct &&
-                    explanationDetails
-                  "
+                  v-else-if="!answerFeedback?.correct && explanationDetails"
                   class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2"
                 >
-
                   <div
                     class="rounded-full bg-[#F6D9D9] px-4 py-2 text-sm font-semibold text-[#7B1A1A]"
                   >
                     Hai scelto:
-                    {{
-                      explanationDetails.selectedAnswer
-                    }}
+                    {{ explanationDetails.selectedAnswer }}
                   </div>
 
                   <div
                     class="rounded-full bg-[#0B8742] px-4 py-2 text-sm font-semibold text-white"
                   >
                     Corretta:
-                    {{
-                      explanationDetails.correctAnswer
-                    }}
+                    {{ explanationDetails.correctAnswer }}
                   </div>
-
                 </div>
 
                 <!-- =================================================
                      COME SI USA
                      ================================================== -->
 
-                <div
-                  class="mt-3 w-full sm:mt-4"
-                >
-
+                <div class="mt-3 w-full sm:mt-4">
                   <article
                     class="mx-auto w-[87%] rounded-[18px] bg-[#EAC656] px-3 py-3 text-[#171E32] sm:w-full sm:rounded-[22px] sm:px-5 sm:py-4"
                   >
-
                     <h3
                       class="text-center text-[1.3rem] font-bold italic text-[#171E32] sm:text-[1.7rem]"
                     >
@@ -1144,23 +909,15 @@ onBeforeUnmount(() => {
                     <p
                       class="mt-2 text-center text-[1.45rem] font-bold leading-tight text-[#AB2E33] sm:mt-3 sm:text-[1.95rem]"
                     >
-                      {{
-                        explanationDetails?.usageExample ||
-                        ''
-                      }}
+                      {{ explanationDetails?.usageExample || "" }}
                     </p>
 
                     <p
                       class="mt-2 text-center text-[1.05rem] leading-snug text-[#171E32] sm:mt-3 sm:text-[1.35rem]"
                     >
-                      ({{
-                        explanationDetails?.usageExplanation ||
-                        ''
-                      }})
+                      ({{ explanationDetails?.usageExplanation || "" }})
                     </p>
-
                   </article>
-
                 </div>
 
                 <!-- =================================================
@@ -1168,31 +925,23 @@ onBeforeUnmount(() => {
                      ================================================== -->
 
                 <div
-                  v-if="
-                    explanationStatusLabel
-                  "
+                  v-if="explanationStatusLabel"
                   class="pointer-events-none absolute -bottom-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full text-white shadow-[0_10px_28px_rgba(0,0,0,0.24)]"
                   :class="
-                    explanationStatusIcon ===
-                    'check'
+                    explanationStatusIcon === 'check'
                       ? 'bg-[#0B8742]'
                       : 'bg-[#B93333]'
                   "
                 >
-
                   <!-- CHECK -->
 
                   <svg
-                    v-if="
-                      explanationStatusIcon ===
-                      'check'
-                    "
+                    v-if="explanationStatusIcon === 'check'"
                     viewBox="0 0 24 24"
                     width="32"
                     height="32"
                     aria-hidden="true"
                   >
-
                     <path
                       d="M5 13L10 18L19 7"
                       fill="none"
@@ -1201,7 +950,6 @@ onBeforeUnmount(() => {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
-
                   </svg>
 
                   <!-- X -->
@@ -1213,7 +961,6 @@ onBeforeUnmount(() => {
                     height="32"
                     aria-hidden="true"
                   >
-
                     <path
                       d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5"
                       fill="none"
@@ -1221,35 +968,24 @@ onBeforeUnmount(() => {
                       stroke-width="3.8"
                       stroke-linecap="round"
                     />
-
                   </svg>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         <!-- =================================================
              CASUALE + STORICO
              ================================================== -->
 
-        <div
-          class="mt-11 flex justify-center gap-4 sm:mt-16"
-        >
-
+        <div class="mt-11 flex justify-center gap-4 sm:mt-16">
           <!-- CASUALE -->
 
           <button
             type="button"
             class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
-            @click="
-              answerRandomly
-            "
+            @click="answerRandomly"
           >
             Casuale
           </button>
@@ -1259,13 +995,10 @@ onBeforeUnmount(() => {
           <button
             type="button"
             class="rounded-full border-2 border-[#171E32] bg-white px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
-            @click="
-              openHistory
-            "
+            @click="openHistory"
           >
             Storico
           </button>
-
         </div>
 
         <!-- =================================================
@@ -1275,90 +1008,68 @@ onBeforeUnmount(() => {
         <div
           class="mx-auto mt-4 hidden w-[var(--card-width)] max-w-full items-center justify-between px-4 sm:pointer-events-none sm:absolute sm:inset-x-0 sm:top-[170px] sm:mt-0 sm:flex sm:h-12 sm:w-auto sm:px-0"
         >
-
-        <button
-          type="button"
-          class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
-          :disabled="
-            questionsIndex === 0 ||
-            isAnswering
-          "
-          @click="
-            goPreviousQuestion
-          "
-          aria-label="Domanda precedente"
-        >
-
-          <svg
-            viewBox="0 0 20 20"
-            width="16"
-            height="16"
-            class="block"
-            aria-hidden="true"
-            style="
-              overflow: visible;
-            "
+          <button
+            type="button"
+            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
+            :disabled="questionsIndex === 0 || isAnswering"
+            @click="goPreviousQuestion"
+            aria-label="Domanda precedente"
           >
+            <svg
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+              class="block"
+              aria-hidden="true"
+              style="overflow: visible"
+            >
+              <path
+                d="M12.75 4.75L7.5 10L12.75 15.25"
+                transform="translate(-0.8 0)"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
 
-            <path
-              d="M12.75 4.75L7.5 10L12.75 15.25"
-              transform="translate(-0.8 0)"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-          </svg>
-
-        </button>
-
-        <!-- =================================================
+          <!-- =================================================
              FRECCIA DESTRA
              ================================================== -->
 
-        <button
-          type="button"
-          class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
-          :disabled="
-            isAnswering
-          "
-          @click="
-            goNextQuestion
-          "
-          aria-label="Domanda successiva"
-        >
-
-          <svg
-            viewBox="0 0 20 20"
-            width="16"
-            height="16"
-            class="block"
-            aria-hidden="true"
-            style="
-              overflow: visible;
-            "
+          <button
+            type="button"
+            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
+            :class="{
+              'right-arrow-feedback': isRightArrowFeedbackActive,
+            }"
+            :disabled="isAnswering"
+            @click="goNextQuestion"
+            aria-label="Domanda successiva"
           >
-
-            <path
-              d="M7.25 15.25L12.5 10L7.25 4.75"
-              transform="translate(0.8 0)"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-          </svg>
-
-        </button>
-
+            <svg
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+              class="block"
+              aria-hidden="true"
+              style="overflow: visible"
+            >
+              <path
+                d="M7.25 15.25L12.5 10L7.25 4.75"
+                transform="translate(0.8 0)"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
         </div>
-
       </div>
-
     </div>
 
     <!-- =================================================
@@ -1366,47 +1077,25 @@ onBeforeUnmount(() => {
          ================================================== -->
 
     <div
-      v-else-if="
-        isFinished &&
-        currentView === 'quiz'
-      "
+      v-else-if="isFinished && currentView === 'quiz'"
       class="flex h-full min-h-0 w-full flex-1 overflow-hidden"
     >
-
       <ResultOk
         v-if="isQuizPassed"
-        :questions-ok="
-          questionsOk
-        "
-        :questions-ko="
-          questionsKo
-        "
-        :questions-ok-required="
-          questionsOkRequired
-        "
-        @restart="
-          restartQuiz
-        "
+        :questions-ok="questionsOk"
+        :questions-ko="questionsKo"
+        :questions-ok-required="questionsOkRequired"
+        @restart="restartQuiz"
       />
 
       <ResultKo
         v-else
-        :questions-ok="
-          questionsOk
-        "
-        :questions-ko="
-          questionsKo
-        "
-        :questions-ok-required="
-          questionsOkRequired
-        "
-        @restart="
-          restartQuiz
-        "
+        :questions-ok="questionsOk"
+        :questions-ko="questionsKo"
+        :questions-ok-required="questionsOkRequired"
+        @restart="restartQuiz"
       />
-
     </div>
-
   </section>
 </template>
 
@@ -1419,11 +1108,10 @@ onBeforeUnmount(() => {
 
 @media (max-width: 639px) {
   .quiz-shell {
-    --card-width: min(74vw, 320px);
+    --card-width: min(calc(100vw - 32px), 760px);
     --card-height: 410px;
     --arrow-gap: -24px;
   }
-
 }
 
 @media (min-width: 768px) and (max-width: 899px) {
@@ -1441,14 +1129,7 @@ onBeforeUnmount(() => {
   height: 100%;
   width: 100%;
   transform-style: preserve-3d;
-  transition:
-    transform 620ms
-    cubic-bezier(
-      0.22,
-      0.61,
-      0.36,
-      1
-    );
+  transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
 }
 
@@ -1469,5 +1150,24 @@ onBeforeUnmount(() => {
 
 .quiz-flip-back {
   transform: rotateY(180deg);
+}
+
+.right-arrow-feedback {
+  animation: right-arrow-shake 280ms ease-in-out;
+}
+
+@keyframes right-arrow-shake {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+
+  30% {
+    transform: translateX(-4px) translateY(0) scale(1.04);
+  }
+
+  65% {
+    transform: translateX(4px) translateY(0) scale(1.04);
+  }
 }
 </style>

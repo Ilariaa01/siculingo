@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue";
 
 const props = defineProps({
   questionsOk: {
@@ -10,20 +10,20 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-})
+});
 
 const mergedResults = computed(() => {
   const ok = props.questionsOk.map((question) => ({
     ...question,
-    result: 'ok',
-  }))
+    result: "ok",
+  }));
   const ko = props.questionsKo.map((question) => ({
     ...question,
-    result: 'ko',
-  }))
+    result: "ko",
+  }));
 
-  return [...ok, ...ko].sort((a, b) => a.questionIndex - b.questionIndex)
-})
+  return [...ok, ...ko].sort((a, b) => a.questionIndex - b.questionIndex);
+});
 </script>
 
 <template>
@@ -39,11 +39,12 @@ const mergedResults = computed(() => {
         <p class="font-medium text-neutral-900">
           {{ result.value }} - {{ result.result }}
         </p>
-        <p
-          v-if="result.result === 'ko'"
-          class="mt-1 text-sm text-neutral-700"
-        >
-          Risposta corretta: {{ result.correctAnswer?.text || result.answers.find((answer) => answer.correct)?.text }}
+        <p v-if="result.result === 'ko'" class="mt-1 text-sm text-neutral-700">
+          Risposta corretta:
+          {{
+            result.correctAnswer?.text ||
+            result.answers.find((answer) => answer.correct)?.text
+          }}
         </p>
       </li>
     </ul>

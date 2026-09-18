@@ -14,108 +14,85 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(["select"]);
 
 function onSelect(answer, answerIndex) {
   if (props.disabled || props.feedback) {
-    return
+    return;
   }
 
-  emit('select', {
+  emit("select", {
     answer,
     answerIndex,
-  })
+  });
 }
 
 function answerFeedbackClass(answerIndex, answer) {
   // STATO INIZIALE
   if (!props.feedback) {
     return [
-      'border-[#D8B857]',
-      'bg-[#E0BE56]',
-      'text-[#171E32]',
-      'hover:brightness-95',
-    ].join(' ')
+      "border-[#D8B857]",
+      "bg-[#E0BE56]",
+      "text-[#171E32]",
+      "hover:brightness-95",
+    ].join(" ");
   }
 
-  const isSelected = props.feedback.index === answerIndex
-  const isCorrectAnswer = answer.correct
-  const wasCorrect = props.feedback.correct
+  const isSelected = props.feedback.index === answerIndex;
+  const isCorrectAnswer = answer.correct;
+  const wasCorrect = props.feedback.correct;
 
   // RISPOSTA CORRETTA
   if (wasCorrect && isSelected) {
     return [
-      'border-[#0B8742]',
-      'bg-[#0B8742]',
-      'text-white',
-      'shadow-[0_10px_24px_rgba(11,135,66,0.25)]',
-    ].join(' ')
+      "border-[#0B8742]",
+      "bg-[#0B8742]",
+      "text-white",
+      "shadow-[0_10px_24px_rgba(11,135,66,0.25)]",
+    ].join(" ");
   }
 
   // RISPOSTA ERRATA SELEZIONATA
   if (!wasCorrect && isSelected) {
     return [
-      'border-[#B93333]',
-      'bg-[#B93333]',
-      'text-white',
-      'shadow-[0_10px_24px_rgba(185,51,51,0.25)]',
-    ].join(' ')
+      "border-[#B93333]",
+      "bg-[#B93333]",
+      "text-white",
+      "shadow-[0_10px_24px_rgba(185,51,51,0.25)]",
+    ].join(" ");
   }
 
   // RISPOSTA CORRETTA DOPO UN ERRORE
   if (!wasCorrect && isCorrectAnswer) {
     return [
-      'border-[#0B8742]',
-      'bg-[#0B8742]',
-      'text-white',
-      'shadow-[0_10px_24px_rgba(11,135,66,0.22)]',
-    ].join(' ')
+      "border-[#0B8742]",
+      "bg-[#0B8742]",
+      "text-white",
+      "shadow-[0_10px_24px_rgba(11,135,66,0.22)]",
+    ].join(" ");
   }
 
   // ALTRE RISPOSTE DOPO IL FEEDBACK
   return [
-    'border-[#D8B857]',
-    'bg-[#E0BE56]',
-    'text-[#171E32]',
-    'opacity-45',
-  ].join(' ')
+    "border-[#D8B857]",
+    "bg-[#E0BE56]",
+    "text-[#171E32]",
+    "opacity-45",
+  ].join(" ");
 }
 </script>
 
 <template>
-  <section class="mx-auto w-[91%] sm:w-full">
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-
+  <section class="mx-auto w-full min-w-0 sm:w-full">
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-5">
       <button
         v-for="(answer, answerIndex) in props.question.answers"
         :key="`${props.question.value}-${answerIndex}`"
         type="button"
         :disabled="props.disabled"
-        class="
-          flex
-          min-h-[64px]
-          items-center
-          justify-center
-          rounded-[18px]
-          border
-          px-3
-          py-2
-          text-center
-          text-[16px]
-          font-bold
-          leading-snug
-          shadow-sm
-          transition-all
-          duration-200
-          ease-out
-          sm:min-h-[100px]
-          sm:rounded-[22px]
-          sm:py-3
-          sm:text-[18px]
-          sm:px-4
-        "
+        class="flex min-h-[52px] items-center justify-center rounded-[14px] border px-2.5 py-1.5 text-center text-[14px] font-bold leading-snug shadow-sm transition-all duration-200 ease-out sm:min-h-[100px] sm:rounded-[22px] sm:py-3 sm:text-[18px] sm:px-4"
         :class="[
           answerFeedbackClass(answerIndex, answer),
 
@@ -123,15 +100,12 @@ function answerFeedbackClass(answerIndex, answer) {
             ? 'cursor-not-allowed'
             : 'hover:scale-[1.01] hover:brightness-95',
 
-          props.feedback && !props.disabled
-            ? 'cursor-default'
-            : '',
+          props.feedback && !props.disabled ? 'cursor-default' : '',
         ]"
         @click="onSelect(answer, answerIndex)"
       >
         {{ answer.text }}
       </button>
-
     </div>
   </section>
 </template>
