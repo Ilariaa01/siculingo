@@ -14,10 +14,11 @@ onMounted(() => {});
 <template>
   <Loading v-if="global.loading > 0" />
   <div class="flex h-dvh flex-col overflow-hidden">
+    <Auth />
+
     <main
       class="mx-auto flex h-full w-full max-w-none flex-1 flex-col items-stretch overflow-hidden"
     >
-      <Auth />
       <router-view />
     </main>
   </div>
