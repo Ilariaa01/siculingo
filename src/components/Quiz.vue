@@ -324,7 +324,7 @@ async function loadQuestions() {
     }
 
     /*
-      Prendiamo 24 parole casuali
+      Prendiamo 21 parole casuali
       dal file data.json.
     */
 
