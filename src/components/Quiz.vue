@@ -1,12 +1,13 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
-import Answers from "./Answers.vue";
+import QuizCard from "./QuizCard.vue";
 import ResultKo from "./ResultKo.vue";
 import ResultOk from "./ResultOk.vue";
 import QuizHistory from "./QuizHistory.vue";
 
 import { useGlobal } from "../composables/global";
+import { QUESTIONS_OK_REQUIRED, QUESTIONS_PER_QUIZ } from "../config.js";
 import { auth, saveQuizResult } from "../firebase.js";
 
 const global = useGlobal();
@@ -20,8 +21,7 @@ const questionsOk = ref([]);
 const questionsKo = ref([]);
 const questionsIndex = ref(0);
 
-const questionsOkRequired = 10;
-const TOTAL_QUESTIONS = 24;
+const questionsOkRequired = QUESTIONS_OK_REQUIRED;
 
 const fetchError = ref("");
 const answerFeedback = ref(null);
@@ -68,7 +68,7 @@ const isFinished = computed(() => {
 });
 
 const totalQuestions = computed(() => {
-  return questions.value.length || TOTAL_QUESTIONS;
+  return questions.value.length || QUESTIONS_PER_QUIZ;
 });
 
 const currentStep = computed(() => {
@@ -89,6 +89,14 @@ const progressPercent = computed(() => {
 
 const isQuizPassed = computed(() => {
   return questionsOk.value.length >= questionsOkRequired;
+});
+
+const selectedAnswer = computed(() => {
+  if (!answerFeedback.value || !currentQuestion.value) {
+    return null;
+  }
+
+  return currentQuestion.value.answers[answerFeedback.value.index] ?? null;
 });
 
 /* =========================================================
@@ -320,7 +328,7 @@ async function loadQuestions() {
       dal file data.json.
     */
 
-    const selectedQuestions = shuffleQuestions(payload).slice(0, TOTAL_QUESTIONS);
+    const selectedQuestions = shuffleQuestions(payload).slice(0, QUESTIONS_PER_QUIZ);
 
     questions.value = selectedQuestions.map((item) => ({
       ...item,
@@ -553,9 +561,7 @@ function goNextQuestion() {
   });
 
   /*
-    Quando viene superata
-    l'ultima domanda salviamo
-    il quiz nello storico.
+    Quando viene superata l'ultima domanda salviamo il quiz nello storico.
   */
 
   if (questionsIndex.value >= questions.value.length) {
@@ -598,7 +604,7 @@ function onTouchEnd(event) {
 }
 
 /* =========================================================
-   MODALITÀ CASUALE
+   MODALITÀ CASUALE (STRUMENTO DI DEBUG)
    ========================================================= */
 
 function answerRandomly() {
@@ -632,24 +638,16 @@ function answerRandomly() {
 }
 
 /* =========================================================
-   ICONA FEEDBACK
+   SHORTCUT DI DEBUG DA TASTIERA (ALT + D)
    ========================================================= */
 
-const explanationStatusLabel = computed(() => {
-  if (!answerFeedback.value) {
-    return "";
+function handleDebugShortcut(event) {
+  if (event.altKey && event.key.toLowerCase() === "d") {
+    event.preventDefault();
+    console.log("🛠️ Debug: Esecuzione quiz casuale...");
+    answerRandomly();
   }
-
-  return answerFeedback.value.correct ? "Risposta corretta" : "Risposta errata";
-});
-
-const explanationStatusIcon = computed(() => {
-  if (!answerFeedback.value) {
-    return "";
-  }
-
-  return answerFeedback.value.correct ? "check" : "cross";
-});
+}
 
 /* =========================================================
    EXPOSE
@@ -668,10 +666,18 @@ defineExpose({
 
 onMounted(() => {
   loadQuestions();
+
+  if (import.meta.env.DEV) {
+    window.addEventListener("keydown", handleDebugShortcut);
+  }
 });
 
 onBeforeUnmount(() => {
   clearFeedbackTimer();
+
+  if (import.meta.env.DEV) {
+    window.removeEventListener("keydown", handleDebugShortcut);
+  }
 });
 </script>
 
@@ -713,7 +719,7 @@ onBeforeUnmount(() => {
       <div class="mt-8 flex justify-center">
         <button
           type="button"
-          class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-8 py-3 text-lg font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95"
+          class="rounded-full border-2 border-[#171E32] bg-limone px-8 py-3 text-lg font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-limone hover:bg-[#171E32] hover:text-limone hover:shadow-xl active:scale-95"
           @click="closeHistory"
         >
           Torna al quiz
@@ -736,14 +742,14 @@ onBeforeUnmount(() => {
         >
           <div class="h-3 flex-1 overflow-hidden rounded-full bg-[#D9DCE8]">
             <div
-              class="h-full rounded-full bg-[#0B1334] transition-all duration-300"
+              class="h-full rounded-full bg-navy transition-all duration-300"
               :style="{
                 width: `${progressPercent}%`,
               }"
             ></div>
           </div>
 
-          <span class="text-xs font-semibold text-[#0B1334] sm:text-sm">
+          <span class="text-xs font-semibold text-navy sm:text-sm">
             {{ currentStep }}
             su
             {{ totalQuestions }}
@@ -755,216 +761,48 @@ onBeforeUnmount(() => {
              ================================================== -->
 
         <div
-          class="quiz-card-container relative mx-auto h-[var(--card-height)] w-[var(--card-width)] max-w-full"
-          :class="{ 'showing-back': isCardFlipped }"
+          class="relative mx-auto min-h-[var(--card-height)] w-[var(--card-width)] max-w-full"
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
-          <div class="quiz-flip-scene absolute left-1/2 top-0 h-full w-full -translate-x-1/2">
-            <div
-              class="quiz-flip-card"
-              :key="questionsIndex"
-              :class="{
-                'is-flipped': isCardFlipped,
-                'no-flip-transition': isChangingQuestion,
-              }"
-            >
-              <!-- =================================================
-                   FRONTE
-                   ================================================== -->
-
-              <div
-                class="quiz-flip-face quiz-flip-front flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
-              >
-                <div class="mb-2 sm:mb-5">
-                  <div class="w-full text-center">
-                    <!-- PAROLA -->
-
-                    <h2
-                      class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
-                    >
-                      {{ currentQuestion?.value || `Domanda ${currentStep}` }}
-                    </h2>
-
-                    <p class="mt-2 text-lg font-semibold text-[#1E2435] sm:mt-4 sm:text-2xl">
-                      Cosa significa
-                    </p>
-                  </div>
-                </div>
-
-                <!-- RISPOSTE -->
-
-                <Answers
-                  v-if="currentQuestion"
-                  :question="currentQuestion"
-                  :feedback="answerFeedback"
-                  :disabled="isAnswering"
-                  @select="onAnswerSelected"
-                />
-              </div>
-
-              <!-- =================================================
-                   RETRO
-                   ================================================== -->
-
-              <div
-                class="quiz-flip-face quiz-flip-back flex flex-col items-center justify-center rounded-[24px] bg-white px-3 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:rounded-[32px] sm:px-8 sm:py-7"
-              >
-                <!-- PAROLA -->
-
-                <div class="w-full text-center">
-                  <h2
-                    class="text-[2.2rem] font-extrabold italic leading-none text-[#AD2E2E] sm:text-[3.2rem]"
-                  >
-                    {{ currentQuestion?.value || `Domanda ${currentStep}` }}
-                  </h2>
-                </div>
-
-                <!-- =================================================
-                     RISPOSTA CORRETTA
-                     ================================================== -->
-
-                <div
-                  v-if="answerFeedback?.correct && explanationDetails"
-                  class="mt-4 flex min-h-[44px] items-center justify-between gap-3 rounded-full bg-[#0B8742] px-5 text-white"
-                >
-                  <span class="text-sm font-semibold italic sm:text-[1.05rem]">
-                    Risposta corretta
-                  </span>
-
-                  <span class="text-sm sm:text-[1.05rem]">
-                    {{ explanationDetails.correctAnswer }}
-                  </span>
-                </div>
-
-                <!-- =================================================
-                     RISPOSTA ERRATA
-                     ================================================== -->
-
-                <div
-                  v-else-if="!answerFeedback?.correct && explanationDetails"
-                  class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2"
-                >
-                  <div
-                    class="rounded-full bg-[#F6D9D9] px-4 py-2 text-sm font-semibold text-[#7B1A1A]"
-                  >
-                    Hai scelto:
-                    {{ explanationDetails.selectedAnswer }}
-                  </div>
-
-                  <div class="rounded-full bg-[#0B8742] px-4 py-2 text-sm font-semibold text-white">
-                    Corretta:
-                    {{ explanationDetails.correctAnswer }}
-                  </div>
-                </div>
-
-                <!-- =================================================
-                     COME SI USA
-                     ================================================== -->
-
-                <div class="mt-3 w-full sm:mt-4">
-                  <article
-                    class="mx-auto w-[87%] rounded-[18px] bg-[#EAC656] px-3 py-3 text-[#171E32] sm:w-full sm:rounded-[22px] sm:px-5 sm:py-4"
-                  >
-                    <h3
-                      class="text-center text-[1.3rem] font-bold italic text-[#171E32] sm:text-[1.7rem]"
-                    >
-                      Come si usa?
-                    </h3>
-
-                    <p
-                      class="mt-2 text-center text-[1.45rem] font-bold leading-tight text-[#AB2E33] sm:mt-3 sm:text-[1.95rem]"
-                    >
-                      {{ explanationDetails?.usageExample || "" }}
-                    </p>
-
-                    <p
-                      class="mt-2 text-center text-[1.05rem] leading-snug text-[#171E32] sm:mt-3 sm:text-[1.35rem]"
-                    >
-                      ({{ explanationDetails?.usageExplanation || "" }})
-                    </p>
-                  </article>
-                </div>
-
-                <!-- =================================================
-                     ICONA RISPOSTA
-                     ================================================== -->
-
-                <div
-                  v-if="explanationStatusLabel"
-                  class="pointer-events-none absolute -bottom-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full text-white shadow-[0_10px_28px_rgba(0,0,0,0.24)]"
-                  :class="explanationStatusIcon === 'check' ? 'bg-[#0B8742]' : 'bg-[#B93333]'"
-                >
-                  <!-- CHECK -->
-
-                  <svg
-                    v-if="explanationStatusIcon === 'check'"
-                    viewBox="0 0 24 24"
-                    width="32"
-                    height="32"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M5 13L10 18L19 7"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-
-                  <!-- X -->
-
-                  <svg v-else viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
-                    <path
-                      d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3.8"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+          <QuizCard
+            v-if="currentQuestion"
+            :question="currentQuestion"
+            :show-answer="isCardFlipped"
+            :selected-answer="selectedAnswer"
+            :feedback="answerFeedback"
+            :explanation-details="explanationDetails"
+            :disabled="isAnswering"
+            :is-changing-question="isChangingQuestion"
+            @select-answer="onAnswerSelected"
+            @next="goNextQuestion"
+          />
         </div>
 
         <!-- =================================================
-             CASUALE + STORICO
+             STORICO
              ================================================== -->
 
-        <div class="mt-11 flex justify-center gap-4 sm:mt-16">
-          <!-- CASUALE -->
-
+        <div class="mt-11 flex justify-center sm:mt-16">
           <button
             type="button"
-            class="rounded-full border-2 border-[#171E32] bg-[#EAC656] px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
-            @click="answerRandomly"
-          >
-            Casuale
-          </button>
-
-          <!-- STORICO -->
-
-          <button
-            type="button"
-            class="rounded-full border-2 border-[#171E32] bg-white px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-[#EAC656] hover:bg-[#171E32] hover:text-[#EAC656] hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
+            class="rounded-full border-2 border-[#171E32] bg-white px-9 py-4 text-sm font-bold text-[#171E32] shadow-lg transition-all duration-300 hover:border-limone hover:bg-[#171E32] hover:text-limone hover:shadow-xl active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
             @click="openHistory"
           >
             Storico
           </button>
         </div>
-        
+
+        <!-- =================================================
              FRECCIA SINISTRA
+             ================================================== -->
 
         <div
           class="mx-auto mt-4 hidden w-[var(--card-width)] max-w-full items-center justify-between px-4 sm:pointer-events-none sm:absolute sm:inset-x-0 sm:top-[170px] sm:mt-0 sm:flex sm:h-12 sm:w-auto sm:px-0"
         >
           <button
             type="button"
-            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
+            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-navy shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%-var(--card-width)/2-var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
             :disabled="questionsIndex === 0 || isAnswering"
             @click="goPreviousQuestion"
             aria-label="Domanda precedente"
@@ -990,12 +828,12 @@ onBeforeUnmount(() => {
           </button>
 
           <!-- =================================================
-             FRECCIA DESTRA
-             ================================================== -->
+               FRECCIA DESTRA
+               ================================================== -->
 
           <button
             type="button"
-            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-[#0B1334] shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
+            class="relative z-10 flex h-12 w-12 items-center justify-center overflow-visible rounded-full bg-white text-navy shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-out hover:scale-110 hover:brightness-95 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40 sm:pointer-events-auto sm:absolute sm:left-[calc(50%+var(--card-width)/2+var(--arrow-gap))] sm:top-0 sm:-translate-x-1/2"
             :class="{
               'right-arrow-feedback': isRightArrowFeedbackActive,
             }"
@@ -1055,7 +893,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .quiz-shell {
-  --card-width: min(72vw, 760px);
+  --card-width: min(72vw, 500px);
   --card-height: 370px;
   --arrow-gap: 100px;
 }
@@ -1070,40 +908,8 @@ onBeforeUnmount(() => {
 
 @media (min-width: 768px) and (max-width: 899px) {
   .quiz-shell {
-    --card-width: 567px;
+    --card-width: 500px;
   }
-}
-
-.quiz-flip-scene {
-  perspective: 1800px;
-}
-
-.quiz-flip-card {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  transform-style: preserve-3d;
-  transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  will-change: transform;
-}
-
-.quiz-flip-card.no-flip-transition {
-  transition: none;
-}
-
-.quiz-flip-card.is-flipped {
-  transform: rotateY(180deg);
-}
-
-.quiz-flip-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.quiz-flip-back {
-  transform: rotateY(180deg);
 }
 
 .right-arrow-feedback {
